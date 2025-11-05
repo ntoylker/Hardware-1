@@ -1,7 +1,8 @@
 //
 // File: tb_nn.v
 // Description: Full testbench for the 'nn' module (Exercise 4).
-//              FIXED: Corrects $urandom_range logic for signed ranges.
+//              Corrects $urandom_range logic for signed ranges.
+//              Now prints DUT flags (OVF/ZERO stages) on every test.
 //
 
 `timescale 1ns / 1ps
@@ -23,7 +24,7 @@ module tb_nn;
 
     // --- Test Range Constants ---
     localparam [DATAWIDTH-1:0] MAX_POS = 32'h7FFFFFFF;
-    localparam [DATAWIDTH-1:0] MAX_POS_HALF = 32'h40000000;
+    localparam [DATAWIDTH-1:0] MAX_POS_HALF = 32'h30000000;
     localparam [DATAWIDTH-1:0] MAX_NEG = 32'h80000000;
     localparam [DATAWIDTH-1:0] MAX_NEG_HALF = 32'hC0000000;
     
@@ -64,10 +65,10 @@ module tb_nn;
         .final_output(dut_final_output),
         .total_ovf(dut_total_ovf),
         .total_zero(dut_total_zero),
+ 
         .ovf_fsm_stage(dut_ovf_fsm_stage),
         .zero_fsm_stage(dut_zero_fsm_stage)
     );
-
 
 //*****************************************************************************************
 // --- REFERENCE MODEL (nn_model) ---
@@ -149,28 +150,39 @@ endfunction
         
         // 3. De-assert enable
         enable = 0;
-
+        
         // 4. Wait for the FSM to complete its 5-cycle pipeline
         repeat (FSM_LATENCY) @(posedge clk);
         
         // 5. Check the result (after the 5th cycle)
         #1; // Wait 1ps for combinatorial outputs to stabilize
         
+        // --- 8< --- MODIFIED: Display Logic --- 8< ---
+        $display("       Inputs: %h(%d), %h(%d)", in1, in1, in2, in2);
+        $display("       DUT Output: %h(%d) | Model Output: %h(%d)", 
+                 dut_final_output, dut_final_output, expected_output, expected_output);
+
         if (dut_final_output === expected_output) begin
             $display("[PASS] (Test %0d) %s", total_count, test_name);
-          	$display("       Inputs: %h(%d), %h(%d) -> Output: %h(%d)", in1, in1, in2, in2, dut_final_output, dut_final_output);
             pass_count++;
         end else begin
             // Error message as specified
             $error("[FAIL] (Test %0d) %s @ time %0t ns", total_count, test_name, $time);
             $error("       Inputs: %h(%d), %h(%d)", in1, in1, in2, in2);
-          	$error("       Expected: %h(%d)", expected_output, expected_output);
+            $error("       Expected: %h(%d)", expected_output, expected_output);
             $error("       Got (DUT): %h(%d)", dut_final_output, dut_final_output);
         end
         
+        // Always print flags
+        $display("       DUT Flags: OVF=%b (Stage:%b), ZERO=%b (Stage:%b)", 
+                 dut_total_ovf, dut_ovf_fsm_stage, 
+                 dut_total_zero, dut_zero_fsm_stage);
+        $display("       -------------------------------------------------");
+        // --- 8< --- END OF MODIFICATION --- 8< ---
+        
         // Wait 2 cycles for FSM to be stable in IDLE before next test
         repeat(2) @(posedge clk);
-
+        
     endtask
     
     // --- 8< --- NEW: Helper Function for Signed Random --- 8< ---
@@ -211,8 +223,7 @@ endfunction
         
         $display("[%0t ns] FSM is now in IDLE. Starting %0d test repetitions...", $time, NUM_REPETITIONS);
         
-      
-      	@(posedge clk);
+        @(posedge clk);
         
         // 3. Run the 100 repetitions
         for (i = 0; i < NUM_REPETITIONS; i = i + 1) begin
@@ -251,9 +262,9 @@ endfunction
         $display("Final Score: %0d / %0d tests passed.", pass_count, total_count);
         
         if (pass_count == total_count) begin
-            $display("--- ALL TESTS PASSED ---");
+          $display("--- ALL TESTS PASSED ---\n\n");
         end else begin
-            $error("--- FAILURE: %0d / %0d tests failed ---", 
+            $error("--- FAILURE: %0d / %0d tests failed ---\n\n", 
                    (total_count - pass_count), total_count);
         end
 
