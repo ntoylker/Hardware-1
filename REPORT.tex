@@ -1,0 +1,223 @@
+\documentclass[12pt, a4paper]{article}
+
+% --- ΒΑΣΙΚΑ ΠΑΚΕΤΑ ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} % <-- Πρόσθεσε αυτή τη γραμμή
+\usepackage[greek]{babel}
+\usepackage{geometry} % Για τα περιθώρια
+\geometry{a4paper, margin=1in} % Περιθώρια 1 ίντσα
+\usepackage{graphicx} % Για εισαγωγή εικόνων
+\usepackage{hyperref} % Για υπερσυνδέσμους (π.χ. στον πίνακα περιεχομένων)
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Αναφορά Project HW-1},
+    pdfpagemode=FullScreen,
+}
+
+% --- ΠΑΚΕΤΑ ΓΙΑ ΚΩΔΙΚΑ ---
+\usepackage{listings} % Για εισαγωγή κώδικα
+
+\usepackage{xcolor} % Για χρώματα στον κώδικα
+
+% --- Ρυθμίσεις για το 'listings' (Verilog) ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+
+\lstdefinestyle{verilogstyle}{
+    language=Verilog,
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize, % Μέγεθος γραμματοσειράς κώδικα
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    % Αρίθμηση γραμμών
+    numbersep=5pt,                   
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{
+    basicstyle=\ttfamily\selectlanguage{english}\footnotesize,
+}
+
+
+% --- ΣΤΟΙΧΕΙΑ ΕΡΓΑΣΙΑΣ ---
+\title{Ψηφιακά Συστήματα \textlatin{HW} σε Χαμηλά Επίπεδα Λογικής I \\ \textlatin{Project's Report}}
+\author{Νίκος Τουλκερίδης\\ ΑΕΜ: 10718}
+\date{\today}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                   ΚΥΡΙΩΣ ΑΝΑΦΟΡΑ                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\maketitle % Δημιουργία σελίδας τίτλου
+
+\newpage
+\tableofcontents % Πίνακας περιεχομένων
+
+%% -- 1 -- %%
+\newpage
+\section*{Εισαγωγή}\addcontentsline{toc}{section}{Εισαγωγή}
+
+Η παρούσα εργασία υλοποιήθηκε στα πλαίσια του μαθήματος <<Ψηφιακά Συστήματα \textlatin{HW} σε Χαμηλά Επίπεδα Λογικής I>>.
+Κεντρικός στόχος είναι η σχεδίαση, η υλοποίηση σε γλώσσα περιγραφής υλικού \textlatin{Verilog} και η προσομοίωση της λειτουργίας τεσσάρων διακριτών ψηφιακών κυκλωμάτων, τα οποία συνδυάζονται για να δημιουργήσουν ένα ολοκληρωμένο, αν και απλό, σύστημα.
+Η εργασία αποτελείται από τέσσερα βασικά μέρη:
+
+\begin{itemize}
+    \item \textbf{Άσκηση 1:} Σχεδίαση μιας 32-\textlatin{bit} Αριθμητικής/Λογικής Μονάδας (\textlatin{ALU}), ικανής να εκτελεί 12 διαφορετικές αριθμητικές, λογικές πράξεις και πράξεις ολίσθησης.
+    \item \textbf{Άσκηση 2:} Υλοποίηση μιας απλής αριθμομηχανής 16-\textlatin{bit}, η οποία χρησιμοποιεί την \textlatin{ALU} της Άσκησης 1 και έναν συσσωρευτή (\textlatin{accumulator}) για να εκτελεί διαδοχικούς υπολογισμούς.
+    \item \textbf{Άσκηση 3:} Σχεδίαση ενός αρχείου καταχωρητών (\textlatin{register file}) μεγέθους 16*32-\textlatin{bit}, το οποίο διαθέτει πολλαπλές θύρες ανάγνωσης (4) και εγγραφής (2).
+    \item \textbf{Άσκηση 4:} Σχεδίαση και υλοποίηση ενός μικρού επιταχυντή \textlatin{AI} (\textlatin{AI accelerator}) που μοντελοποιεί ένα απλό νευρωνικό δίκτυο.
+Αυτό το τελικό σύστημα χρησιμοποιεί την \textlatin{ALU} (μέσω μιας μονάδας \textlatin{MAC}) και το \textlatin{register file} για την εκτέλεση των απαιτούμενη υπολογισμών.
+\end{itemize}
+
+Στις επόμενες ενότητες αυτής της αναφοράς παρουσιάζεται αναλυτικά η σχεδιαστική προσέγγιση που ακολουθήθηκε, ο πλήρης κώδικας \textlatin{Verilog} για κάθε \textlatin{module}, καθώς και τα αποτελέσματα της προσομοίωσης που χρησιμοποιήθηκαν για την επαλήθευση της ορθής λειτουργίας τους.
+
+%% -- 2 -- %%
+\newpage
+\section{Άσκηση 1: Αριθμητική/Λογική Μονάδα (\textlatin{ALU})}
+
+% 2.1
+\subsection{Σκοπός και Προδιαγραφές}
+Ο σκοπός της πρώτης άσκησης ήταν η σχεδίαση και υλοποίηση σε \textlatin{Verilog} μιας Αριθμητικής/Λογικής Μονάδας (\textlatin{ALU}) 32-\textlatin{bit}.
+Η μονάδα αυτή θα αποτελέσει δομικό στοιχείο για τις επόμενες ασκήσεις, συγκεκριμένα την αριθμομηχανή και τον επιταχυντή \textlatin{AI}.
+Βάσει των προδιαγραφών, η \textlatin{ALU} έπρεπε να σχεδιαστεί ως ένα αμιγώς \textbf{συνδυαστικό κύκλωμα}(\textlatin{combinational circuit}).
+Αυτό σημαίνει ότι οι έξοδοί της εξαρτώνται αποκλειστικά από τις τρέχουσες τιμές των εισόδων και δεν υπάρχει μνήμη κατάστασης, ούτε ανάγκη για σήμα ρολογιού ή επαναφοράς.
+Οι θύρες εισόδου και εξόδου της μονάδας, όπως καθορίστηκαν στον πίνακα της εκφώνησης, είναι:
+\begin{itemize}
+    \item \textbf{Είσοδοι:} \texttt{\textlatin{op1}} (32-\textlatin{bit}) και \texttt{\textlatin{op2}} (32-\textlatin{bit}) ως οι δύο προσημασμένοι τελεστές σε μορφή συμπληρώματος ως προς 2, και \texttt{\textlatin{alu\_op}} (4-\textlatin{bit}) ως σήμα ελέγχου για την επιλογή της εκτελούμενης πράξης.
+    \item \textbf{Έξοδοι:} \texttt{\textlatin{result}} (32-\textlatin{bit}) που φέρει το αποτέλεσμα της πράξης, \texttt{\textlatin{zero}} (1-\textlatin{bit}) που ενεργοποιείται (γίνεται 1) όταν το \texttt{\textlatin{result}} είναι μηδέν, και \texttt{\textlatin{ovf}} (1-\textlatin{bit}) που σηματοδοτεί υπερχείλιση (\textlatin{overflow}) για τις αριθμητικές πράξεις (πρόσθεση, αφαίρεση, πολλαπλασιασμός).
+\end{itemize}
+
+Η \textlatin{ALU} σχεδιάστηκε για να υποστηρίζει 12 διαφορετικές πράξεις, οι οποίες επιλέγονται από την είσοδο \texttt{\textlatin{alu\_op}} και ομαδοποιούνται ως εξής:
+\begin{itemize}
+    \item \textbf{Αριθμητικές (Προσημασμένες):} Πρόσθεση (\textlatin{4'b0100}), Αφαίρεση (\textlatin{4'b0101}), Πολλαπλασιασμός (\textlatin{4'b0110}).
+    \item \textbf{Λογικές:} \textlatin{AND} (\textlatin{4'b1000}), \textlatin{OR} (\texttt{4'b1001}), \textlatin{NOR} (\textlatin{4'b1010}), \textlatin{NAND} (\textlatin{4'b1011}), \textlatin{XOR} (\textlatin{4'b1100}).
+    \item \textbf{Ολισθήσεις:} Λογική Δεξιά/Αριστερά (\textlatin{4'b0000}, \textlatin{4'b0001}) και Αριθμητική Δεξιά/Αριστερά (\textlatin{4'b0010}, \textlatin{4'b0011}).
+\end{itemize}
+Όπως απαιτήθηκε, οι 4-\textlatin{bit} κωδικοί για αυτές τις πράξεις ορίστηκαν ως σταθερές \texttt{\textlatin{parameter}} εντός του \textlatin{module} \texttt{\textlatin{alu.v}} για βελτιωμένη αναγνωσιμότητα.
+
+% 2.2
+\subsection{Υλοποίηση (\textlatin{alu.v})}
+Η υλοποίηση της \textlatin{ALU} (αρχείο \texttt{\textlatin{alu.v}}) βασίστηκε σε ένα κεντρικό συνδυαστικό μπλοκ \texttt{\textlatin{always @(*)}}.
+Εντός αυτού του μπλοκ, ένας πολυπλέκτης υλοποιήθηκε χρησιμοποιώντας μια δομή \texttt{\textlatin{case}}.
+Αυτή η δομή ελέγχει την είσοδο \texttt{\textlatin{alu\_op}} και επιλέγει την κατάλληλη λογική για τον υπολογισμό του \texttt{\textlatin{result}} και του \texttt{\textlatin{ovf}}.
+Οι είσοδοι \texttt{\textlatin{op1}} και \texttt{\textlatin{op2}} δηλώθηκαν ως \texttt{\textlatin{signed}}, κάτι που είναι κρίσιμο για να εξασφαλιστεί ότι η \textlatin{Verilog} θα εκτελέσει τις αριθμητικές πράξεις και την αριθμητική ολίσθηση δεξιά ως προσημασμένες.
+Ιδιαίτερη προσοχή δόθηκε στον ορθό υπολογισμό της υπερχείλισης (\texttt{\textlatin{ovf}}) για τις τρεις προσημασμένες αριθμητικές πράξεις, χρησιμοποιώντας ενδιάμεσα \textlatin{wires} για σαφήνεια:
+\begin{itemize}
+    \item \textbf{Πρόσθεση (\textlatin{SUM}):} Η υπερχείλιση ανιχνεύεται όταν οι δύο τελεστές έχουν το ίδιο πρόσημο (\textlatin{bit} 31) και το αποτέλεσμα (\texttt{\textlatin{add\_res}}) έχει διαφορετικό πρόσημο από αυτούς.
+    \item \textbf{Αφαίρεση (\textlatin{SUB}):} Η υπερχείλιση ανιχνεύεται όταν οι τελεστές έχουν διαφορετικό πρόσημο και το αποτέλεσμα (\texttt{\textlatin{sub\_res}}) έχει διαφορετικό πρόσημο από τον μειωτέο (\texttt{\textlatin{op1}}).
+    \item \textbf{Πολλαπλασιασμός (\textlatin{MUL}):} Ο πολλαπλασιασμός 32*32 παράγει ένα ενδιάμεσο αποτέλεσμα 64-\textlatin{bit} (\texttt{\textlatin{mul\_res}}).
+    Υπερχείλιση συμβαίνει εάν το αποτέλεσμα δεν χωράει σε 32 \textlatin{bits}, δηλαδή αν τα 32 ανώτερα \textlatin{bits} (\texttt{\textlatin{mul\_res[63:32]}}) δεν αποτελούν απλή επέκταση προσήμου (\textlatin{sign-extension}) του 31ου \textlatin{bit}.
+\end{itemize}
+Για όλες τις λογικές πράξεις και τις ολισθήσεις, η σημαία \texttt{\textlatin{ovf}} τίθεται πάντα σε \textlatin{1'b0}, καθώς η υπερχείλιση δεν ορίζεται για αυτές.
+Για τις πράξεις ολίσθησης, αξιοποιήθηκε η συμπεριφορά της \textlatin{Verilog}:
+\begin{itemize}
+    \item \textbf{Αριθμητική Δεξιά Ολίσθηση} (\texttt{\textlatin{>>>}}): Επειδή ο \texttt{\textlatin{op1}} είναι \texttt{\textlatin{signed}}, ο τελεστής αυτός διατηρεί αυτόματα το πρόσημο (γεμίζει με το \textlatin{MSB}).
+    \item \textbf{Λογική Δεξιά Ολίσθηση} (\texttt{\textlatin{>>}}): Απαιτήθηκε ρητή μετατροπή (\textlatin{casting}) του τελεστή σε \texttt{\textlatin{\$unsigned(op1)}} για να εξασφαλιστεί ότι η ολίσθηση θα γεμίσει τα κενά με μηδενικά, ανεξαρτήτως προσήμου.
+    \item \textbf{Αριστερές Ολισθήσεις} (\texttt{\textlatin{<<}}): Η λογική και η αριθμητική αριστερή ολίσθηση είναι ταυτόσημες και γεμίζουν πάντα με μηδενικά.
+\end{itemize}
+Τέλος, η σημαία \texttt{\textlatin{zero}} υλοποιήθηκε εκτός του \texttt{\textlatin{always}} μπλοκ, με μια συνεχή ανάθεση (\texttt{\textlatin{assign zero = (result == 32'b0)}}).
+Αυτό εξασφαλίζει ότι η έξοδος \texttt{\textlatin{zero}} είναι 1 οποτεδήποτε το τελικό \texttt{\textlatin{result}} είναι μηδέν.
+Μια \texttt{\textlatin{default}} περίπτωση προστέθηκε στη δομή \texttt{\textlatin{case}} για την αποφυγή συμπερασμού \textlatin{latches}.
+Ο πλήρης κώδικας της μονάδας παρατίθεται στο αρχείο \texttt{\textlatin{alu.v}}.
+
+% 2.3
+\subsection{\textlatin{Testbench} και Αποτελέσματα Προσομοίωσης}
+Για την επαλήθευση της ορθής λειτουργίας της \textlatin{ALU}, δημιουργήθηκε ένα \textlatin{testbench} στο αρχείο \texttt{\textlatin{testbench\_alu.v}}.
+Το \textlatin{testbench} αυτό εκτελεί μια σειρά από προκαθορισμένες δοκιμές μέσω ενός \texttt{\textlatin{initial block}}.
+Χρησιμοποιήθηκε ένα βοηθητικό \texttt{\textlatin{task}} με όνομα \texttt{\textlatin{check\_op}}, το οποίο αναλαμβάνει να θέσει τις τιμές των εισόδων \texttt{\textlatin{tb\_op1}}, \texttt{\textlatin{tb\_op2}} και \texttt{\textlatin{tb\_alu\_op}}, να αναμένει 10\textlatin{ns} για τη διάδοση του αποτελέσματος στο συνδυαστικό κύκλωμα, και κατόπιν να εκτυπώσει στην κονσόλα την εκτελούμενη πράξη, τις εισόδους, το αποτέλεσμα (\texttt{\textlatin{tb\_result}}) και τις σημαίες (\texttt{\textlatin{tb\_ovf}}, \texttt{\textlatin{tb\_zero}}) σε δεκαεξαδική μορφή.
+Οι δοκιμές κάλυψαν και τις 12 πράξεις, δίνοντας έμφαση σε οριακές περιπτώσεις:
+\begin{itemize}
+    \item Έλεγχος θετικής (\textlatin{MAX\_INT + 1}) και αρνητικής υπερχείλισης για την πρόσθεση (\textlatin{SUM}).
+    \item Έλεγχος της σημαίας \texttt{\textlatin{zero}} με την αφαίρεση \texttt{25 - 25}.
+    \item Έλεγχος υπερχείλισης για την αφαίρεση (\textlatin{MIN\_INT - 1}).
+    \item Έλεγχος υπερχείλισης για τον πολλαπλασιασμό (\texttt{2\textsuperscript{16} * 2\textsuperscript{16}}).
+    \item Σύγκριση μεταξύ λογικής και αριθμητικής δεξιάς ολίσθησης σε έναν αρνητικό αριθμό (\textlatin{32'hF000000A}), για να επιβεβαιωθεί η σωστή διατήρηση (ή μη) του προσήμου.
+\end{itemize}
+Η εκτέλεση του \textlatin{testbench} (όπως φαίνεται στην έξοδο της κονσόλας) επιβεβαίωσε ότι όλες οι πράξεις, συμπεριλαμβανομένων των οριακών συνθηκών, παράγουν τα αναμενόμενα αποτελέσματα και ότι οι σημαίες \texttt{\textlatin{ovf}} και \texttt{\textlatin{zero}} ενεργοποιούνται σωστά.
+
+% 2.4
+\subsection{Συμπέρασμα Άσκησης 1}
+Η σχεδίαση της 32-\textlatin{bit} \textlatin{ALU} ολοκληρώθηκε με επιτυχία.
+Η μονάδα που υλοποιήθηκε στο \texttt{\textlatin{alu.v}} είναι ένα αμιγώς συνδυαστικό κύκλωμα που εκτελεί σωστά και τις 12 απαιτούμενες αριθμητικές, λογικές και πράξεις ολίσθησης.
+Οι μηχανισμοί ανίχνευσης υπερχείλισης και μηδενικού αποτελέσματος λειτουργούν όπως αναμένεται, σύμφωνα με την επαλήθευση που έγινε με το \textlatin{testbench}.
+Αυτή η \textlatin{ALU} είναι πλέον έτοιμη να ενσωματωθεί στα πιο σύνθετα συστήματα των επόμενων ασκήσεων.
+
+
+%% -- 3 -- %%
+\newpage
+\section{Άσκηση 2: Αριθμομηχανή \textlatin{16-bit}}
+
+% 3.1
+\subsection{Σκοπός και Προδιαγραφές}
+Σκοπός της δεύτερης άσκησης ήταν η σχεδίαση μιας απλής αριθμομηχανής, η οποία χρησιμοποιεί την \textlatin{32-bit} \textlatin{ALU} που δημιουργήθηκε στην Άσκηση 1. Το κύκλωμα της αριθμομηχανής (\textlatin{module} \texttt{\textlatin{calc}}) σχεδιάστηκε για να διατηρεί μια τρέχουσα τιμή σε έναν καταχωρητή συσσωρευτή (\textlatin{accumulator}) \textlatin{16-bit}.
+
+Οι είσοδοι του κυκλώματος είναι το σήμα ρολογιού (\texttt{\textlatin{clk}}), πέντε πλήκτρα ελέγχου (\texttt{\textlatin{btnc}}, \texttt{\textlatin{btnac}}, \texttt{\textlatin{btnl}}, \texttt{\textlatin{btnr}}, \texttt{\textlatin{btnd}}) και 16 διακόπτες (\texttt{\textlatin{sw}}) για την εισαγωγή δεδομένων. Η μοναδική έξοδος είναι 16 \textlatin{LED} (\texttt{\textlatin{led}}), τα οποία απεικονίζουν την τρέχουσα τιμή του συσσωρευτή.
+
+% 3.2
+\subsection{Σχεδίαση και Ροή Δεδομένων}
+Η υλοποίηση (αρχείο \texttt{\textlatin{calc.v}}) βασίστηκε στο διάγραμμα ροής που δόθηκε στις προδιαγραφές. Το σύστημα αποτελείται από δύο βασικά μέρη: το ακολουθιακό κύκλωμα του συσσωρευτή και το συνδυαστικό κύκλωμα της \textlatin{ALU} και της λογικής ελέγχου.
+
+\paragraph{Ακολουθιακή Λογική (\textlatin{Accumulator})}
+Η καρδιά του συστήματος είναι ο \textlatin{16-bit} καταχωρητής \texttt{\textlatin{accumulator}}, ο οποίος υλοποιήθηκε με ένα μπλοκ \texttt{\textlatin{always @(posedge clk)}}. Η λειτουργία του είναι σύγχρονη:
+\begin{itemize}
+    \item \textbf{Σύγχρονος Μηδενισμός:} Όταν το πλήκτρο \texttt{\textlatin{btnac}} (\textlatin{All Clear}) είναι πατημένο, ο \texttt{\textlatin{accumulator}} μηδενίζεται στην επόμενη θετική ακμή του ρολογιού.
+    \item \textbf{Σύγχρονη Φόρτωση:} Όταν το κεντρικό πλήκτρο \texttt{\textlatin{btnc}} είναι πατημένο (και το \texttt{\textlatin{btnac}} δεν είναι), ο \texttt{\textlatin{accumulator}} λαμβάνει και αποθηκεύει τα 16 κατώτερα \textlatin{bits} (\texttt{\textlatin{[15:0]}}) του αποτελέσματος της \textlatin{ALU} (\texttt{\textlatin{alu\_result\_wire}}).
+\end{itemize}
+Η τιμή του \texttt{\textlatin{accumulator}} οδηγείται συνεχώς στην έξοδο \texttt{\textlatin{led}} μέσω μιας \texttt{\textlatin{assign}} δήλωσης.
+
+\paragraph{Συνδυαστική Λογική (Ροή \textlatin{ALU})}
+Η \textlatin{ALU} της Άσκησης 1 είναι \textlatin{32-bit}, ενώ η αριθμομηχανή λειτουργεί με τιμές \textlatin{16-bit}. Για να γεφυρωθεί αυτό το χάσμα, χρησιμοποιήθηκε επέκταση προσήμου (\textlatin{sign extension}):
+\begin{itemize}
+    \item \textbf{Είσοδος \textlatin{op1}:} Η \textlatin{16-bit} τιμή του \texttt{\textlatin{accumulator}} μετατρέπεται σε \textlatin{32-bit} προσημασμένη τιμή (\texttt{\textlatin{op1\_signed}}) επαναλαμβάνοντας το ανώτερο \textlatin{bit} του (\texttt{\textlatin{accumulator[15]}}) 16 φορές. Αυτό υλοποιήθηκε με τον τελεστή \textlatin{concatenation}: \texttt{\{\{16\{accumulator[15]\}\}, accumulator\}}.
+    \item \textbf{Είσοδος \textlatin{op2}:} Αντίστοιχα, η \textlatin{16-bit} είσοδος από τους διακόπτες (\texttt{\textlatin{sw}}) επεκτείνεται σε \textlatin{32-bit} προσημασμένη τιμή (\texttt{\textlatin{op2\_signed}}) για να οδηγηθεί στην \texttt{\textlatin{op2}} είσοδο της \textlatin{ALU}.
+\end{itemize}
+Το \textlatin{32-bit} αποτέλεσμα (\texttt{\textlatin{result}}) της \textlatin{ALU} τροφοδοτείται πίσω στην είσοδο του \texttt{\textlatin{accumulator}}, ο οποίος (όπως αναφέρθηκε) κρατά μόνο τα 16 κατώτερα \textlatin{bits}.
+
+% 3.3
+\subsection{Λογική Ελέγχου (\texttt{\textlatin{calc\_enc.v}})}
+Η επιλογή της πράξης που εκτελεί η \textlatin{ALU} δεν γίνεται απευθείας. Αντ' αυτού, ένα ξεχωριστό \textlatin{module} κωδικοποιητή (\texttt{\textlatin{calc\_enc}}) μετατρέπει τις τιμές των τριών πλήκτρων κατεύθυνσης (\texttt{\textlatin{btnl}}, \texttt{\textlatin{btnr}}, \texttt{\textlatin{btnd}}) στο \textlatin{4-bit} σήμα ελέγχου \texttt{\textlatin{alu\_op}}.
+
+Αυτό το \textlatin{module} υλοποιεί την συνδυαστική λογική που περιγράφηκε στα Σχήματα 2 έως 5 των προδιαγραφών. Αν και οι οδηγίες ζητούσαν η υλοποίηση να γίνει σε \textlatin{structural Verilog} (με χρήση πυλών \textlatin{AND}, \textlatin{OR}, \textlatin{NOT}), στην παρούσα υλοποίηση (ενσωματωμένη στο αρχείο \texttt{\textlatin{calc.v}}) επιλέχθηκε η περιγραφή της λογικής με συνεχείς αναθέσεις (\texttt{\textlatin{assign statements}}) για λόγους απλότητας και αναγνωσιμότητας.
+
+% 3.4
+\subsection{\textlatin{Testbench} και Αποτελέσματα Προσομοίωσης}
+Για την επαλήθευση της ορθής λειτουργίας της αριθμομηχανής, δημιουργήθηκε το αρχείο \texttt{\textlatin{testbench\_calc.v}}. Το \textlatin{testbench} αυτό υλοποιεί την ακριβή ακολουθία δοκιμών που ορίζεται στον πίνακα των προδιαγραφών.
+
+Το \textlatin{testbench} παράγει ένα σήμα ρολογιού (\texttt{\textlatin{CLK\_PERIOD = 10ns}}) και χρησιμοποιεί ένα βοηθητικό \texttt{\textlatin{task}} με όνομα \texttt{\textlatin{check\_step}}. Αυτό το \texttt{\textlatin{task}} είναι κρίσιμο για τον έλεγχο ακολουθιακών κυκλωμάτων:
+\begin{enumerate}
+    \item Θέτει τις τιμές όλων των εισόδων (πλήκτρα και διακόπτες).
+    \item Αναμένει την επόμενη θετική ακμή του ρολογιού (\texttt{\textlatin{@ (posedge clk)}}), επιτρέποντας στον \texttt{\textlatin{accumulator}} να ενημερωθεί.
+    \item Ελέγχει την έξοδο \texttt{\textlatin{led}} (μετά από μια μικρή καθυστέρηση \#1) για να διασφαλίσει ότι ταιριάζει με την αναμενόμενη τιμή (\texttt{\textlatin{expected\_led}}).
+\end{enumerate}
+Η ακολουθία ελέγχου ξεκινά με \texttt{\textlatin{RESET}} (\texttt{\textlatin{btnac=1}}) και εκτελεί τις πράξεις \textlatin{ADD}, \textlatin{XOR}, \textlatin{LSR}, \textlatin{NOR}, \textlatin{MULT}, \textlatin{LSL}, \textlatin{NAND} και \textlatin{SUB}, θέτοντας το \texttt{\textlatin{btnc=1}} σε κάθε βήμα για να φορτώσει το αποτέλεσμα. Η προσομοίωση επιβεβαίwσε ότι η έξοδος \texttt{\textlatin{led}} ήταν ίδια με την αναμενόμενη τιμή σε κάθε βήμα, επαληθεύοντας τη σωστή λειτουργία του κυκλώματος.
+
+\subsection{Συμπέρασμα Άσκησης 2}
+Η Άσκηση 2 ολοκληρώθηκε με επιτυχία, ενσωματώνοντας την συνδυαστική \textlatin{ALU} της Άσκησης 1 σε ένα πλήρες ακολουθιακό κύκλωμα. Η σχεδίαση διαχειρίζεται σωστά τη ροή δεδομένων μεταξύ στοιχείων \textlatin{16-bit} (όπως ο \texttt{\textlatin{accumulator}} και το \texttt{\textlatin{sw}}) και της \textlatin{32-bit} \textlatin{ALU} μέσω της επέκτασης προσήμου (\textlatin{sign extension}). Η λογική ελέγχου για τον σύγχρονο μηδενισμό και φόρτωση του συσσωρευτή, καθώς και η αποκωδικοποίηση των πλήκτρων, λειτούργησαν όπως αναμενόταν κατά την προσομοίωση.
+
+
+
+
+
+
+
+
+
+
+\end{document}

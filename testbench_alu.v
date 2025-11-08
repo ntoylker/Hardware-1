@@ -1,3 +1,5 @@
+// Code your testbench here
+// or browse Examples
 //
 // TESTBENCH ΓΙΑ ΤΗΝ ALU - ΔΕΚΑΕΞΑΔΙΚΗ ΕΚΤΥΠΩΣΗ
 //
@@ -43,7 +45,7 @@ module testbench;
     $dumpfile("dump.vcd");
     $dumpvars(0, testbench);
 
-    $display("--- ΕΝΑΡΞΗ TESTBENCH ΓΙΑ ALU (ΕΞΟΔΟΣ ΣΕ ΔΕΚΑΕΞΑΔΙΚΗ ΜΟΡΦΗ) ---");
+    $display("--- START TESTBENCH FOR ALU (HEXADECIMAL FORM OUTPUTS) ---");
 
     // --- TEST 1: ALUOP_SUM (Πρόσθεση) ---
     check_op(ALUOP_SUM, 100, 50);          // 100 + 50 = 150
@@ -75,9 +77,9 @@ module testbench;
     check_op(ALUOP_LOG_SHFT_RIGHT,   32'hF000000A, 4); // Λογική
     check_op(ALUOP_ARTHM_SHFT_RIGHT, 32'hF000000A, 4); // Αριθμητική
 
-    $display("--- ΤΕΛΟΣ TESTBENCH ---");
+    $display("--- END OF TESTBENCH ---");
     #20; 
-    $finish; 
+	$finish; 
   end
 
 
@@ -114,3 +116,4 @@ module testbench;
   endtask
 
 endmodule
+
