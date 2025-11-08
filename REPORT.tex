@@ -239,59 +239,140 @@
 
 % 3.1
 \subsection{Σκοπός και Προδιαγραφές}
-Σκοπός της τρίτης άσκησης ήταν η σχεδίαση ενός αρχείου καταχωρητών (\textlatin{register file}) πολλαπλών θυρών, το οποίο θα αποτελέσει βασικό δομικό στοιχείο αποθήκευσης (π.χ. για βάρη και πολώσεις) στον επιταχυντή \textlatin{AI} της Άσκησης 4.
+Σκοπός της τρίτης άσκησης ήταν η σχεδίαση ενός αρχείου καταχωρητών (\textlatin{register file})
+πολλαπλών θυρών, το οποίο θα αποτελέσει βασικό δομικό στοιχείο αποθήκευσης (π.χ. για
+βάρη και πολώσεις) στον επιταχυντή ΑΙ της Άσκησης 4.
 
-Βάσει των προδιαγραφών, το \textlatin{module} \texttt{\textlatin{regfile.v}} έπρεπε να υλοποιήσει ένα αρχείο 16 καταχωρητών, με κάθε καταχωρητή να έχει πλάτος \texttt{\textlatin{DATAWIDTH}}. Αυτό το πλάτος ορίστηκε ως \textlatin{parameter} του \textlatin{module}, με προεπιλεγμένη τιμή τα 32 \textlatin{bits}, δημιουργώντας έτσι μια δομή \textlatin{16x32-bit}.
+Βάσει των προδιαγραφών, το \textlatin{module} \texttt{\textlatin{regfile.v}} έπρεπε να υλοποιήσει ένα αρχείο 16
+καταχωρητών, με κάθε καταχωρητή να έχει πλάτος \texttt{\textlatin{DATAWIDTH}}.
+Αυτό το πλάτος ορίστηκε
+ως \textlatin{parameter} του \textlatin{module}, με προεπιλεγμένη τιμή τα 32 \textlatin{bits}, δημιουργώντας έτσι μια δομή
+\textlatin{16x32-bit}.
 
-Το κύκλωμα είναι εξαιρετικά πολυθύρικο (\textlatin{multi-ported}) για να επιτρέπει υψηλό παραλληλισμό, διαθέτοντας:
+Το κύκλωμα είναι εξαιρετικά πολυθύρικο (\textlatin{multi-ported}) για να επιτρέπει υψηλό παραλ-
+ληλισμό, διαθέτοντας:
 \begin{itemize}
-    \item \textbf{Εισόδους Ελέγχου:} \texttt{\textlatin{clk}} (ρολόι), \texttt{\textlatin{resetn}} (ενεργό-χαμηλό ασύγχρονο σήμα επαναφοράς) και \texttt{\textlatin{write}} (σήμα ενεργοποίησης εγγραφής).
-    \item \textbf{Θύρες Εγγραφής (2):} Δύο πλήρεις, ανεξάρτητες θύρες εγγραφής. Η κάθε μία αποτελείται από μια \textlatin{4-bit} διεύθυνση (\texttt{\textlatin{writeReg1}}, \texttt{\textlatin{writeReg2}}) και έναν \textlatin{bus} δεδομένων \textlatin{32-bit} (\texttt{\textlatin{writeData1}}, \texttt{\textlatin{writeData2}}).
-    \item \textbf{Θύρες Ανάγνωσης (4):} Τέσσερις ανεξάρτητες θύρες ανάγνωσης. Η κάθε μία αποτελείται από μια \textlatin{4-bit} διεύθυνση (\texttt{\textlatin{readReg1}} έως \texttt{\textlatin{readReg4}}) και έναν \textlatin{bus} δεδομένων εξόδου \textlatin{32-bit} (\texttt{\textlatin{readData1}} έως \texttt{\textlatin{readData4}}).
+    \item \textbf{Εισόδους Ελέγχου:} \texttt{\textlatin{clk}} (ρολόι), \texttt{\textlatin{resetn}} (ενεργό-χαμηλό ασύγχρονο σήμα επα-
+ναφοράς) και \texttt{\textlatin{write}} (σήμα ενεργοποίησης εγγραφής).
+    \item \textbf{Θύρες Εγγραφής (2):} Δύο πλήρεις, ανεξάρτητες θύρες εγγραφής. Η κάθε μία
+αποτελείται από μια \textlatin{4-bit} διεύθυνση (\texttt{\textlatin{writeReg1}}, \texttt{\textlatin{writeReg2}}) και έναν \textlatin{bus} δεδομένων
+\textlatin{32-bit} (\texttt{\textlatin{writeData1}}, \texttt{\textlatin{writeData2}}).
+    \item \textbf{Θύρες Ανάγνωσης (4):} Τέσσερις ανεξάρτητες θύρες ανάγνωσης. Η κάθε μία α-
+ποτελείται από μια \textlatin{4-bit} διεύθυνση (\texttt{\textlatin{readReg1}} έως \texttt{\textlatin{readReg4}}) και έναν \textlatin{bus} δεδομένων
+εξόδου \textlatin{32-bit} (\texttt{\textlatin{readData1}} έως \texttt{\textlatin{readData4}}).
 \end{itemize}
 
 % 3.2
 \subsection{Υλοποίηση και Λογική Λειτουργίας (\textlatin{regfile.v})}
-Η υλοποίηση στο αρχείο \texttt{\textlatin{regfile.v}} διαχωρίζει τη λειτουργία του κυκλώματος σε δύο διακριτά λογικά μπλοκ: ένα ακολουθιακό μπλοκ για την εγγραφή (την αποθήκευση) και ένα συνδυαστικό μπλοκ για την ανάγνωση (την πρόσβαση).
+Η υλοποίηση στο αρχείο \texttt{\textlatin{regfile.v}} διαχωρίζει τη λειτουργία του κυκλώματος σε δύο δια-
+κριτά λογικά μπλοκ: ένα ακολουθιακό μπλοκ για την εγγραφή (την αποθήκευση) και ένα
+συνδυαστικό μπλοκ για την ανάγνωση (την πρόσβαση).
 
 \paragraph{Εσωτερική Αποθήκευση}
-Ο πυρήνας του \textlatin{module} είναι ένας πίνακας από \textlatin{registers} 16 θέσεων, δηλωμένος ως: \texttt{\textlatin{logic [DATAWIDTH-1:0] registers [16];}}. Αυτός ο πίνακας αποτελεί τη μνήμη του \textlatin{register file}.
+Ο πυρήνας του \textlatin{module} είναι ένας πίνακας από \textlatin{registers} 16
+θέσεων, δηλωμένος ως: \texttt{\textlatin{logic [DATAWIDTH-1:0] registers [16];}}.
+Αυτός ο πίνακας
+αποτελεί τη μνήμη του \textlatin{register file}.
 
 \paragraph{Ακολουθιακή Λογική (Εγγραφή και \textlatin{Reset})}
-Η κατάσταση των καταχωρητών (η μνήμη) τροποποιείται αποκλειστικά εντός ενός ακολουθιακού μπλοκ \texttt{\textlatin{always\_ff @(posedge clk or negedge resetn)}}.
+Η κατάσταση των καταχωρητών (η
+μνήμη) τροποποιείται αποκλειστικά εντός ενός ακολουθιακού μπλοκ \texttt{\textlatin{always\_ff @(posedge clk or negedge resetn)}}.
 \begin{itemize}
-    \item \textbf{Ασύγχρονο \textlatin{Reset}:} Όπως ορίστηκε στις προδιαγραφές, το σήμα \texttt{\textlatin{resetn}} είναι ενεργό-χαμηλό. Όταν \texttt{\textlatin{resetn == 0}}, το κύκλωμα αντιδρά αμέσως (ασύγχρονα, χωρίς να περιμένει το ρολόι) και μηδενίζει όλους τους 16 καταχωρητές ταυτόχρονα, χρησιμοποιώντας έναν βρόχο \texttt{\textlatin{for}}.
-    \item \textbf{Σύγχρονη Εγγραφή:} Εάν το \texttt{\textlatin{resetn}} δεν είναι ενεργό, το κύκλωμα αναμένει τη θετική ακμή του \texttt{\textlatin{clk}}. Εάν το σήμα \texttt{\textlatin{write}} είναι ενεργό (\texttt{\textlatin{write == 1}}) κατά την ακμή, οι τιμές από τα \texttt{\textlatin{writeData1}} και \texttt{\textlatin{writeData2}} αποθηκεύονται στους καταχωρητές στις θέσεις \texttt{\textlatin{writeReg1}} και \texttt{\textlatin{writeReg2}} αντίστοιχα.
-    \item \textbf{Σύγκρουση Εγγραφής (\textlatin{Write Collision}):} Στην περίπτωση που και οι δύο θύρες εγγραφής στοχεύουν την ίδια διεύθυνση ταυτόχρονα (\texttt{\textlatin{writeReg1 == writeReg2}}), η σχεδίαση δίνει προτεραιότητα στη δεύτερη θύρα. Λόγω της διαδοχικής ανάθεσης μέσα στο \texttt{\textlatin{always}} μπλοκ, η τιμή του \texttt{\textlatin{writeData2}} θα είναι αυτή που τελικά θα αποθηκευτεί.
+    \item \textbf{Ασύγχρονο \textlatin{Reset}:} Όπως ορίστηκε στις προδιαγραφές, το σήμα \texttt{\textlatin{resetn}} είναι
+ενεργό-χαμηλό.
+Όταν \texttt{\textlatin{resetn == 0}}, το κύκλωμα αντιδρά αμέσως (ασύγχρονα, χωρίς
+να περιμένει το ρολόι) και μηδενίζει όλους τους 16 καταχωρητές ταυτόχρονα, χρησι-
+μοποιώντας έναν βρόχο \texttt{\textlatin{for}}.
+    \item \textbf{Σύγχρονη Εγγραφή:} Εάν το \texttt{\textlatin{resetn}} δεν είναι ενεργό, το κύκλωμα αναμένει τη
+θετική ακμή του \texttt{\textlatin{clk}}.
+Εάν το σήμα \texttt{\textlatin{write}} είναι ενεργό (\texttt{\textlatin{write == 1}}) κατά την ακμή,
+οι τιμές από τα \texttt{\textlatin{writeData1}} και \texttt{\textlatin{writeData2}} αποθηκεύονται στους καταχωρητές στις
+θέσεις \texttt{\textlatin{writeReg1}} και \texttt{\textlatin{writeReg2}} αντίστοιχα.
+    \item \textbf{Σύγκρουση Εγγραφής (\textlatin{Write Collision}):} Στην περίπτωση που και οι δύο
+θύρες εγγραφής στοχεύουν την ίδια διεύθυνση ταυτόχρονα (\texttt{\textlatin{writeReg1 == writeReg2}}),
+η σχεδίαση δίνει προτεραιότητα στη δεύτερη θύρα. Λόγω της διαδοχικής ανάθεσης
+μέσα στο \texttt{\textlatin{always}} μπλοκ, η τιμή του \texttt{\textlatin{writeData2}} θα είναι αυτή που τελικά θα αποθη-
+κευτεί.
 \end{itemize}
 
 \paragraph{Συνδυαστική Λογική (Ανάγνωση και \textlatin{Bypass})}
-Η ανάγνωση των δεδομένων υλοποιείται σε ένα ξεχωριστό, αμιγώς συνδυαστικό μπλοκ \texttt{\textlatin{always\_comb}}. Αυτό σημαίνει ότι η ανάγνωση είναι ασύγχρονη (οι έξοδοι \texttt{\textlatin{readData}} αλλάζουν αμέσως μόλις αλλάξει μια είσοδος \texttt{\textlatin{readReg}}).
+Η ανάγνωση των δεδομένων υ-
+λοποιείται σε ένα ξεχωριστό, αμιγώς συνδυαστικό μπλοκ \texttt{\textlatin{always\_comb}}.
+Αυτό σημαίνει ότι η
+ανάγνωση είναι ασύγχρονη (οι έξοδοι \texttt{\textlatin{readData}} αλλάζουν αμέσως μόλις αλλάξει μια είσοδος
+\texttt{\textlatin{readReg}}).
 
-Το σημαντικότερο χαρακτηριστικό αυτού του μπλοκ είναι η υλοποίηση της λογικής παράκαμψης (\textlatin{bypass}), όπως απαιτήθηκε από τις προδιαγραφές (<<δώστε προτεραιότητα στην εγγραφή>>).
+Το σημαντικότερο χαρακτηριστικό αυτού του μπλοκ είναι η υλοποίηση της λογικής πα-
+ράκαμψης (\textlatin{bypass}), όπως απαιτήθηκε από τις προδιαγραφές (<<δώστε προτεραιότητα στην
+εγγραφή>>).
 \begin{enumerate}
-    \item \textbf{Προεπιλεγμένη Ανάγνωση:} Αρχικά, οι τέσσερις έξοδοι (\texttt{\textlatin{readData1}}... \texttt{\textlatin{readData4}}) λαμβάνουν τις τιμές που είναι ήδη αποθηκευμένες στον πίνακα \texttt{\textlatin{registers}} στις αντίστοιχες διευθύνσεις ανάγνωσης.
-    \item \textbf{Λογική \textlatin{Bypass}:} Στη συνέχεια, το μπλοκ ελέγχει αν το σήμα \texttt{\textlatin{write}} είναι ενεργό. Αν είναι, το κύκλωμα ελέγχει αν κάποια από τις διευθύνσεις εγγραφής (\texttt{\textlatin{writeReg1}}, \texttt{\textlatin{writeReg2}}) ταιριάζει με κάποια από τις διευθύνσεις ανάγνωσης.
-    \item \textbf{Παράδειγμα \textlatin{Bypass}:} Εάν \texttt{\textlatin{write == 1}} και ταυτόχρονα \texttt{\textlatin{writeReg1 == readReg1}}, η έξοδος \texttt{\textlatin{readData1}} δεν θα δείξει την παλιά τιμή από το \texttt{\textlatin{registers[readReg1]}}, αλλά θα πάρει συνδυαστικά την τιμή κατευθείαν από την είσοδο \texttt{\textlatin{writeData1}}. Αυτό επιτρέπει σε μια εντολή να διαβάσει το αποτέλεσμα μιας άλλης που γράφεται στον \textbf{ίδιο κύκλο ρολογιού}, χωρίς να χρειάζεται να περιμένει τον επόμενο.
-    \item \textbf{Προτεραιότητα \textlatin{Bypass}:} Η λογική αυτή σέβεται επίσης την προτεραιότητα σύγκρουσης. Οι έλεγχοι για τη \texttt{\textlatin{writeReg2}} γίνονται \textbf{μετά} τους ελέγχους για τη \texttt{\textlatin{writeReg1}}. Επομένως, αν \texttt{\textlatin{writeReg1 == writeReg2 == readReg1}}, η έξοδος \texttt{\textlatin{readData1}} θα πάρει την τιμή από το \texttt{\textlatin{writeData2}}, διατηρώντας συνέπεια μεταξύ της λογικής εγγραφής και της λογικής ανάγνωσης.
+    \item \textbf{Προεπιλεγμένη Ανάγνωση:} Αρχικά, οι τέσσερις έξοδοι (\texttt{\textlatin{readData1}}... \texttt{\textlatin{readData4}})
+λαμβάνουν τις τιμές που είναι ήδη αποθηκευμένες στον πίνακα \texttt{\textlatin{registers}} στις α-
+ντίστοιχες διευθύνσεις ανάγνωσης.
+    \item \textbf{Λογική \textlatin{Bypass}:} Στη συνέχεια, το μπλοκ ελέγχει αν το σήμα \texttt{\textlatin{write}} είναι ενεργό.
+Αν είναι, το κύκλωμα ελέγχει αν κάποια από τις διευθύνσεις εγγραφής (\texttt{\textlatin{writeReg1}},
+\texttt{\textlatin{writeReg2}}) ταιριάζει με κάποια από τις διευθύνσεις ανάγνωσης.
+    \item \textbf{Παράδειγμα \textlatin{Bypass}:} Εάν \texttt{\textlatin{write == 1}} και ταυτόχρονα \texttt{\textlatin{writeReg1 == readReg1}},
+η έξοδος \texttt{\textlatin{readData1}} δεν θα δείξει την παλιά τιμή από το \texttt{\textlatin{registers[readReg1]}}, αλ-
+λά θα πάρει συνδυαστικά την τιμή κατευθείαν από την είσοδο \texttt{\textlatin{writeData1}}.
+Αυτό
+επιτρέπει σε μια εντολή να διαβάσει το αποτέλεσμα μιας άλλης που γράφεται στον \textbf{ίδιο
+κύκλο ρολογιού}, χωρίς να χρειάζεται να περιμένει τον επόμενο.
+    \item \textbf{Προτεραιότητα \textlatin{Bypass}:} Η λογική αυτή σέβεται επίσης την προτεραιότητα σύγκρου-
+σης.
+Οι έλεγχοι για τη \texttt{\textlatin{writeReg2}} γίνονται \textbf{μετά} τους ελέγχους για τη \texttt{\textlatin{writeReg1}}.
+Επομένως, αν \texttt{\textlatin{writeReg1 == writeReg2 == readReg1}}, η έξοδος \texttt{\textlatin{readData1}} θα
+πάρει την τιμή από το \texttt{\textlatin{writeData2}}, διατηρώντας συνέπεια μεταξύ της λογικής εγ-
+γραφής και της λογικής ανάγνωσης.
 \end{enumerate}
 
 % 3.3
 \subsection{\textlatin{Testbench} και Αποτελέσματα Προσομοίωσης}
-Για την επαλήθευση της σύνθετης αυτής λογικής, χρησιμοποιήθηκε το αρχείο \texttt{\textlatin{testbench\_regfile.v}}. Το \textlatin{testbench} ελέγχει αυστηρά όλα τα κρίσιμα σενάρια λειτουργίας:
+Για την επαλήθευση της σύνθετης αυτής λογικής, χρησιμοποιήθηκε το αρχείο \texttt{\textlatin{testbench\_regfile.v}}.
+Το \textlatin{testbench} ελέγχει αυστηρά όλα τα κρίσιμα σενάρια λειτουργίας:
 \begin{itemize}
-    \item \textbf{Ασύγχρονος Μηδενισμός:} Επιβεβαιώθηκε ότι η ενεργοποίηση του \texttt{\textlatin{resetn}} μηδενίζει όλους τους καταχωρητές ακαριαία, ανεξαρτήτως ρολογιού.
-    \item \textbf{Βασική Εγγραφή/Ανάγνωση:} Ελέγχθηκε η εγγραφή δεδομένων σε πολλαπλές διευθύνσεις και η σωστή ανάγνωσή τους σε επόμενους κύκλους.
-    \item \textbf{Σύγκρουση Εγγραφής (Ακολουθιακά):} Ελέγχθηκε ότι όταν και οι δύο θύρες γράφουν στην ίδια διεύθυνση, η τιμή από τη \texttt{\textlatin{writeData2}} είναι αυτή που αποθηκεύεται μόνιμα.
-    \item \textbf{Λογική \textlatin{Bypass} (Συνδυαστικά):} Ελέγχθηκε το πιο κρίσιμο σενάριο: ενώ οι θύρες ανάγνωσης διάβαζαν παλιές τιμές, το σήμα \texttt{\textlatin{write}} ενεργοποιήθηκε. Το \textlatin{testbench} επιβεβαίωσε ότι οι έξοδοι \texttt{\textlatin{readData}} άλλαξαν \textbf{αμέσως} (συνδυαστικά) για να δείξουν τις νέες τιμές από τα \texttt{\textlatin{writeData}}, \textbf{πριν} την άφιξη της επόμενης ακμής του ρολογιού.
-    \item \textbf{Σύγκρουση \textlatin{Bypass}:} Επιβεβαιώθηκε ότι η συνδυαστική λογική παράκαμψης δίνει επίσης προτεραιότητα στη \texttt{\textlatin{writeData2}} σε περίπτωση σύγκρουσης.
-    \item \textbf{Μονιμότητα Εγγραφής:} Τέλος, ελέγχθηκε ότι τα δεδομένα που εμφανίστηκαν κατά το \textlatin{bypass} όντως αποθηκεύτηκαν μόνιμα στους καταχωρητές μετά την ακμή του ρολογιού.
+    \item \textbf{Ασύγχρονος Μηδενισμός:} Επιβεβαιώθηκε ότι η ενεργοποίηση του \texttt{\textlatin{resetn}} μη-
+δενίζει όλους τους καταχωρητές ακαριαία, ανεξαρτήτως ρολογιού.
+    \item \textbf{Βασική Εγγραφή/Ανάγνωση:} Ελέγχθηκε η εγγραφή δεδομένων σε πολλαπλές
+διευθύνσεις και η σωστή ανάγνωσή τους σε επόμενους κύκλους.
+    \item \textbf{Σύγκρουση Εγγραφής (Ακολουθιακά):} Ελέγχθηκε ότι όταν και οι δύο θύρες
+γράφουν στην ίδια διεύθυνση, η τιμή από τη \texttt{\textlatin{writeData2}} είναι αυτή που αποθηκεύεται
+μόνιμα.
+    \item \textbf{Λογική \textlatin{Bypass} (Συνδυαστικά):} Ελέγχθηκε το πιο κρίσιμο σενάριο: ενώ οι
+θύρες ανάγνωσης διάβαζαν παλιές τιμές, το σήμα \texttt{\textlatin{write}} ενεργοποιήθηκε.
+Το \textlatin{testbench} επιβεβαίωσε ότι οι έξοδοι \texttt{\textlatin{readData}} άλλαξαν \textbf{αμέσως} (συνδυαστικά) για να
+δείξουν τις νέες τιμές από τα \texttt{\textlatin{writeData}}, \textbf{πριν} την άφιξη της επόμενης ακμής του
+ρολογιού.
+    \item \textbf{Σύγκρουση \textlatin{Bypass}:} Επιβεβαιώθηκε ότι η συνδυαστική λογική παράκαμψης δίνει
+επίσης προτεραιότητα στη \texttt{\textlatin{writeData2}} σε περίπτωση σύγκρουσης.
+    \item \textbf{Μονιμότητα Εγγραφής:} Τέλος, ελέγχθηκε ότι τα δεδομένα που εμφανίστηκαν κατά
+το \textlatin{bypass} όντως αποθηκεύτηκαν μόνιμα στους καταχωρητές μετά την ακμή του ρολογιού.
 \end{itemize}
 Όλες οι παραπάνω δοκιμές ολοκληρώθηκαν με επιτυχία, επαληθεύοντας την ορθή σχεδίαση.
+Το σχήμα 4 δείχνει την έξοδο της κονσόλας από την εκτέλεση του \textlatin{testbench},
+επιβεβαιώνοντας την επιτυχία όλων των δοκιμών.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.49\textwidth]{tb_regfile_1-2.png}
+    \hfill
+    \includegraphics[width=0.49\textwidth]{tb_regfile_3-4.png}
+    \caption{Έξοδος κονσόλας του \texttt{\textlatin{testbench\_regfile.v}}. 
+    Αριστερά (\textlatin{Tests} 1-2): Έλεγχος ασύγχρονου \textlatin{reset} και βασικής εγγραφής/ανάγνωσης. 
+    Δεξιά (\textlatin{Tests} 3-5): Έλεγχος σύγκρουσης, \textlatin{bypass} και τελικής αποθήκευσης.}
+    \label{fig:regfile_tb_combined}
+\end{figure}
 
 % 3.4
 \subsection{Συμπέρασμα Άσκησης 3}
-Η σχεδίαση του αρχείου καταχωρητών \textlatin{16x32-bit} ολοκληρώθηκε με επιτυχία. Το \textlatin{module} \texttt{\textlatin{regfile.v}} υλοποιεί σωστά όλες τις προδιαγραφές, συμπεριλαμβανομένης της παραμετροποίησης \texttt{\textlatin{DATAWIDTH}}, του ασύγχρονου ενεργού-χαμηλού \textlatin{reset}, και της σύνθετης λογικής για τις τέσσερις θύρες ανάγνωσης και τις δύο θύρες εγγραφής. Ιδιαίτερα, η υλοποίηση της συνδυαστικής λογικής παράκαμψης (\textlatin{bypass}) με καθορισμένη προτεραιότητα (\textlatin{<<write-first>>)} εξασφαλίζει τη σωστή και αποδοτική ροή δεδομένων, καθιστώντας το \textlatin{module} έτοιμο για ενσωμάτωση στο τελικό σύστημα.
+Η σχεδίαση του αρχείου καταχωρητών \textlatin{16x32-bit} ολοκληρώθηκε με επιτυχία. Το \textlatin{module}
+\texttt{\textlatin{regfile.v}} υλοποιεί σωστά όλες τις προδιαγραφές, συμπεριλαμβανομένης της παραμετρο-
+ποίησης \texttt{\textlatin{DATAWIDTH}}, του ασύγχρονου ενεργού-χαμηλού \textlatin{reset}, και της σύνθετης λογικής
+για τις τέσσερις θύρες ανάγνωσης και τις δύο θύρες εγγραφής.
+Ιδιαίτερα, η υλοποίηση της
+συνδυαστικής λογικής παράκαμψης (\textlatin{bypass}) με καθορισμένη προτεραιότητα (\textlatin{<<write-first>>})
+εξασφαλίζει τη σωστή και αποδοτική ροή δεδομένων, καθιστώντας το \textlatin{module} έτοιμο για
+ενσωμάτωση στο τελικό σύστημα.
 
 
 

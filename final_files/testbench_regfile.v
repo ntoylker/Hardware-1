@@ -1,17 +1,12 @@
-//
-// Αρχείο: tb_regfile.sv
-// Περιγραφή: Testbench για το 'regfile' της Άσκης 3. (ΔΙΟΡΘΩΜΕΝΟ)
-//
-
 `timescale 1ns / 1ps
 
 module tb_regfile;
 
-    // --- Παράμετροι ---
+    // --- Parameters ---
     parameter CLK_PERIOD = 10;
     parameter DATAWIDTH = 32;
     
-    // --- ΣΤΑΘΕΡΕΣ ΓΙΑ ΤΑ TEST DATA ---
+    // --- CONSTANTS FOR TEST DATA ---
     localparam [DATAWIDTH-1:0] DATA_A     = 32'hAAAAAAAA;
     localparam [DATAWIDTH-1:0] DATA_B     = 32'hBBBBBBBB;
     localparam [DATAWIDTH-1:0] DATA_C     = 32'hCCCCCCCC;
@@ -21,7 +16,7 @@ module tb_regfile;
     localparam [DATAWIDTH-1:0] NEW_DATA_2 = 32'h22222222;
     localparam [DATAWIDTH-1:0] NEW_DATA_5 = 32'h55555555;
     
-    // --- Σήματα Testbench ---
+    // --- Testbench Signals ---
     logic clk;
     logic resetn;
     logic write;
@@ -32,7 +27,7 @@ module tb_regfile;
 
     logic [DATAWIDTH-1:0] readData1, readData2, readData3, readData4;
 
-    // --- Σύνδεση του 'regfile' (DUT) ---
+    // --- Instantiate the 'regfile' (DUT) ---
     regfile #(
         .DATAWIDTH(DATAWIDTH)
     ) dut (
@@ -53,13 +48,13 @@ module tb_regfile;
         .readData4(readData4)
     );
 
-    // --- Παραγωγός Ρολογιού ---
+    // --- Clock Generator ---
     initial begin
         clk = 0;
         forever # (CLK_PERIOD / 2) clk = ~clk;
     end
 
-    // --- Βοηθητικό Task για Έλεγχο Εξόδων ---
+    // --- Helper Task for Checking Outputs ---
     task check_read_data(
         input string            test_name,
         input [DATAWIDTH-1:0] exp1,
@@ -81,20 +76,20 @@ module tb_regfile;
         end
     endtask
 
-    // --- Βοηθητικό Task για Κύκλο Εγγραφής ---
+    // --- Helper Task for a Write Cycle ---
     task write_cycle(
         input [3:0] addr1, input [DATAWIDTH-1:0] data1,
         input [3:0] addr2, input [DATAWIDTH-1:0] data2
     );
-        // Ρυθμίζουμε τα σήματα *πριν* την ακμή
+        // Set signals *before* the clock edge
         write = 1;
         writeReg1 = addr1; writeData1 = data1;
         writeReg2 = addr2; writeData2 = data2;
         
-        // Περιμένουμε την ακμή
+        // Wait for the clock edge
         @ (posedge clk); 
         
-        // **ΔΙΟΡΘΩΣΗ: Απενεργοποιούμε το write *ΜΕΤΑ* την ακμή**
+        // **FIX: De-assert write *after* the clock edge**
         #1; 
         write = 0; 
         
@@ -102,13 +97,13 @@ module tb_regfile;
     endtask
 
 
-    // --- Κύρια Ακολουθία Ελέγχου (Stimulus) ---
+    // --- Main Control Sequence (Stimulus) ---
     initial begin
         $dumpfile("dump.vcd");
         $dumpvars(0, tb_regfile);
         $display("--- START TESTBENCH FOR 'regfile' ---");
 
-        // Αρχικοποίηση σημάτων
+        // Initialize signals
         resetn = 1; 
         write = 0;
         readReg1 = 0; readReg2 = 0; readReg3 = 0; readReg4 = 0;
@@ -117,8 +112,8 @@ module tb_regfile;
         
         @ (posedge clk);
 
-        // --- Test 1: Ασύγχρονος Μηδενισμός ---
-        $display("\n--- Test 1: ASYXRONOS MHDENISMOS (resetn=0) ---");
+        // --- Test 1: Asynchronous Reset ---
+        $display("\n--- Test 1: ASYNCHRONOUS RESET (resetn=0) ---");
         resetn <= 0; 
         
         readReg1 = 0; readReg2 = 5; readReg3 = 10; readReg4 = 15;
@@ -129,8 +124,25 @@ module tb_regfile;
         $display("[%0t ns] Reset De-asserted (resetn=1)", $time);
         @ (posedge clk); 
 
-        // --- Test 2: Βασική Εγγραφή & Ανάγνωση ---
-        $display("\n--- Test 2: BASIKI EGGRAFH & ANAGNWSH ---");
+        // --- Test 2: Basic Write & Read ---
+        $display("\n--- Test 2: BASIC WRITE & READ ---");
+        
+        write_cycle(1, DATA_A, 2, DATA_B);
+        write_cycle(3, DATA_C, 4, DATA_D);
+
+        readReg1 = 1; readReg2 = 2; readReg3 = 3; readReg4 = 4;
+        check_read_data("Read R1-R4", DATA_A, DATA_B, DATA_C, DATA_D);
+
+        readReg1 = 4; readReg2 = 0; readReg3 = 2; readReg4 = 15;
+        check_read_data("Async Reset Check", 32'h0, 32'h0, 32'h0, 32'h0);
+        
+        #5; 
+        resetn <= 1; 
+        $display("[%0t ns] Reset De-asserted (resetn=1)", $time);
+        @ (posedge clk); 
+
+        // --- Test 2: Basic Write & Read ---
+        $display("\n--- Test 2: BASIC WRITE & READ ---");
         
         write_cycle(1, DATA_A, 2, DATA_B);
         write_cycle(3, DATA_C, 4, DATA_D);
@@ -142,8 +154,8 @@ module tb_regfile;
         check_read_data("Read R4,R0,R2,R3", DATA_D, 32'h0, DATA_B, DATA_C);
 
 
-        // --- Test 3: Ταυτόχρονη Εγγραφή (Write Collision) ---
-        $display("\n--- Test 3: TAUTOXRONH EGGRAFH (Collision) -> R5 ---");
+        // --- Test 3: Simultaneous Write (Write Collision) ---
+        $display("\n--- Test 3: SIMULTANEOUS WRITE (Collision) -> R5 ---");
 
         write_cycle(5, DATA_W1, 5, DATA_W2);
         
@@ -151,72 +163,71 @@ module tb_regfile;
         check_read_data("Check Collision R5", DATA_W2, DATA_W2, DATA_W2, DATA_W2);
 
 
-        // --- Test 4.1: Λογική Bypass (R2, R5) ---
-        $display("\n--- Test 4.1: LOGIKH Bypass (R2, R5) ---");
+        // --- Test 4.1: Bypass Logic (R2, R5) ---
+        $display("\n--- Test 4.1: BYPASS LOGIC (R2, R5) ---");
         
-        // Τώρα (με το Test 3 διορθωμένο) έχουμε: 
+        // Now (with Test 3 corrected) we have: 
         // R1=A, R2=B, R3=C, R4=D, R5=DEADBEEF
         
         readReg1 = 1; readReg2 = 2; readReg3 = 3; readReg4 = 5;
-        $display("[%0t ns] Ruthmisi anagnosis gia R1, R2, R3, R5...", $time);
+        $display("[%0t ns] Setting up read for R1, R2, R3, R5...", $time);
         
-        // Έλεγχος *πριν* το bypass (τιμές από μνήμη)
+        // Check *before* bypass (values from memory)
         check_read_data("Pre-Bypass 4.1 Check", DATA_A, DATA_B, DATA_C, DATA_W2);
 
-        $display("[%0t ns] Energopoihsh Bypass (write=1) gia R2, R5...", $time);
+        $display("[%0t ns] Activating Bypass (write=1) for R2, R5...", $time);
         write = 1;
         writeReg1 = 2; writeData1 = NEW_DATA_2; 
         writeReg2 = 5; writeData2 = NEW_DATA_5; 
         
-        // Έλεγχος *κατά* το bypass (συνδυαστικές τιμές)
+        // Check *during* bypass (combinational values)
         check_read_data("Bypass 4.1 Check", DATA_A, NEW_DATA_2, DATA_C, NEW_DATA_5);
 
-        // **ΔΙΟΡΘΩΣΗ: Ολοκληρώνουμε τον 1ο κύκλο για να αποθηκευτούν τα R2, R5**
+        // **FIX: Completing 1st cycle to store R2, R5**
         @ (posedge clk);
         #1; 
         write = 0; 
-        $display("[%0t ns] Oloklirothike o kuklos eggrafhs R2, R5.", $time);
+        $display("[%0t ns] Write cycle for R2, R5 completed.", $time);
 
 
         // --- Test 4.2: Bypass Collision (W1 vs W2) -> R8 ---
         $display("\n--- Test 4.2: Bypass Collision (W1 vs W2) -> R8 ---");
         
-        // Οι R1, R2, R3, R4, R5 έχουν πλέον τις τιμές: A, NEW_DATA_2, C, D, NEW_DATA_5
+        // R1, R2, R3, R4, R5 now have the values: A, NEW_DATA_2, C, D, NEW_DATA_5
         
-        // Διαβάζουμε R8, R8, R1 (παλιό), R2 (νέο)
+        // Reading R8, R8, R1 (old), R2 (new)
         readReg1 = 8; readReg2 = 8; readReg3 = 1; readReg4 = 2;
         
-        // Έλεγχος *πριν* το bypass: R8=0 (από reset), R1=A, R2=NEW_DATA_2
+        // Check *before* bypass: R8=0 (from reset), R1=A, R2=NEW_DATA_2
         check_read_data("Pre-Bypass 4.2 Check", 32'h0, 32'h0, DATA_A, NEW_DATA_2);
 
-        $display("[%0t ns] Energopoihsh Bypass (write=1) gia R8, R8...", $time);
+        $display("[%0t ns] Activating Bypass (write=1) for R8, R8...", $time);
         write = 1;
-        writeReg1 = 8; writeData1 = 32'h88881111; // Αυτό πρέπει να χάσει
-        writeReg2 = 8; writeData2 = 32'h88882222; // Αυτό πρέπει να κερδίσει
+        writeReg1 = 8; writeData1 = 32'h88881111; // This one should lose
+        writeReg2 = 8; writeData2 = 32'h88882222; // This one should win
         
-        // Έλεγχος *κατά* το bypass (συνδυαστικές τιμές)
+        // Check *during* bypass (combinational values)
         check_read_data("Bypass Collision 4.2 Check", 
                         32'h88882222, 32'h88882222, DATA_A, NEW_DATA_2);
 
-        // **ΔΙΟΡΘΩΣΗ: Ολοκληρώνουμε τον 2ο κύκλο για να αποθηκευτεί το R8**
+        // **FIX: Completing 2nd cycle to store R8**
         @ (posedge clk);
         #1; 
         write = 0; 
-        $display("[%0t ns] Oloklirothike o kuklos eggrafhs R8.", $time);
+        $display("[%0t ns] Write cycle for R8 completed.", $time);
 
-        // --- Test 5: Τελικός Έλεγχος Αποθήκευσης ---
-        $display("\n--- Test 5: TELIKOS ELEGXOS APOHKEYSHS ---");
+        // --- Test 5: Final Storage Check ---
+        $display("\n--- Test 5: FINAL STORAGE CHECK ---");
         
-        // Τελικός έλεγχος: Οι τιμές (NEW_DATA_2, NEW_DATA_5, 88882222) 
-        // είναι τώρα μόνιμα αποθηκευμένες;
+        // Final check: Are the values (NEW_DATA_2, NEW_DATA_5, 88882222) 
+        // now permanently stored?
         readReg1 = 2; readReg2 = 5; readReg3 = 8; readReg4 = 1;
         check_read_data("Post-Bypass Storage Check", 
                         NEW_DATA_2, NEW_DATA_5, 32'h88882222, DATA_A);
         
-        $display("\n--- OLA TA TEST PERASAN ---");
+        $display("\n--- ALL TESTS PASSED ---");
         #20;
         $finish;
     end
 
 endmodule
-
