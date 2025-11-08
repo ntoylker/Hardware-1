@@ -95,7 +95,7 @@
 \subsection{Σκοπός και Προδιαγραφές}
 Ο σκοπός της πρώτης άσκησης ήταν η σχεδίαση και υλοποίηση σε \textlatin{Verilog} μιας Αριθμητικής/Λογικής Μονάδας (\textlatin{ALU}) 32-\textlatin{bit}.
 Η μονάδα αυτή θα αποτελέσει δομικό στοιχείο για τις επόμενες ασκήσεις, συγκεκριμένα την αριθμομηχανή και τον επιταχυντή \textlatin{AI}.
-Βάσει των προδιαγραφών, η \textlatin{ALU} έπρεπε να σχεδιαστεί ως ένα αμιγώς \textbf{συνδυαστικό κύκλωμα}(\textlatin{combinational circuit}).
+Βάσει των προδιαγραφών, η \textlatin{ALU} έπρεπε να σχεδιαστεί ως ένα αμιγώς \textbf{συνδυαστικό κύκλωμα} (\textlatin{combinational circuit}).
 Αυτό σημαίνει ότι οι έξοδοί της εξαρτώνται αποκλειστικά από τις τρέχουσες τιμές των εισόδων και δεν υπάρχει μνήμη κατάστασης, ούτε ανάγκη για σήμα ρολογιού ή επαναφοράς.
 Οι θύρες εισόδου και εξόδου της μονάδας, όπως καθορίστηκαν στον πίνακα της εκφώνησης, είναι:
 \begin{itemize}
@@ -106,7 +106,7 @@
 Η \textlatin{ALU} σχεδιάστηκε για να υποστηρίζει 12 διαφορετικές πράξεις, οι οποίες επιλέγονται από την είσοδο \texttt{\textlatin{alu\_op}} και ομαδοποιούνται ως εξής:
 \begin{itemize}
     \item \textbf{Αριθμητικές (Προσημασμένες):} Πρόσθεση (\textlatin{4'b0100}), Αφαίρεση (\textlatin{4'b0101}), Πολλαπλασιασμός (\textlatin{4'b0110}).
-    \item \textbf{Λογικές:} \textlatin{AND} (\textlatin{4'b1000}), \textlatin{OR} (\texttt{4'b1001}), \textlatin{NOR} (\textlatin{4'b1010}), \textlatin{NAND} (\textlatin{4'b1011}), \textlatin{XOR} (\textlatin{4'b1100}).
+    \item \textbf{Λογικές:} \textlatin{AND} (\textlatin{4'b1000}), \textlatin{OR} (\textlatin{4'b1001}), \textlatin{NOR} (\textlatin{4'b1010}), \textlatin{NAND} (\textlatin{4'b1011}), \textlatin{XOR} (\textlatin{4'b1100}).
     \item \textbf{Ολισθήσεις:} Λογική Δεξιά/Αριστερά (\textlatin{4'b0000}, \textlatin{4'b0001}) και Αριθμητική Δεξιά/Αριστερά (\textlatin{4'b0010}, \textlatin{4'b0011}).
 \end{itemize}
 Όπως απαιτήθηκε, οι 4-\textlatin{bit} κωδικοί για αυτές τις πράξεις ορίστηκαν ως σταθερές \texttt{\textlatin{parameter}} εντός του \textlatin{module} \texttt{\textlatin{alu.v}} για βελτιωμένη αναγνωσιμότητα.
@@ -114,7 +114,7 @@
 % 1.2
 \subsection{Υλοποίηση (\textlatin{alu.v})}
 Η υλοποίηση της \textlatin{ALU} (αρχείο \texttt{\textlatin{alu.v}}) βασίστηκε σε ένα κεντρικό συνδυαστικό μπλοκ \texttt{\textlatin{always @(*)}}.
-Εντός αυτού του μπλοκ, ένας πολυπλέκτης υλοποιήθηκε χρησιμοποιώντας μια δομή \texttt{\textlatin{case}}.
+Εντός αυτού του μπλοκ, ένας \textbf{πολυπλέκτης} υλοποιήθηκε χρησιμοποιώντας μια δομή \texttt{\textlatin{case}}.
 Αυτή η δομή ελέγχει την είσοδο \texttt{\textlatin{alu\_op}} και επιλέγει την κατάλληλη λογική για τον υπολογισμό του \texttt{\textlatin{result}} και του \texttt{\textlatin{ovf}}.
 Οι είσοδοι \texttt{\textlatin{op1}} και \texttt{\textlatin{op2}} δηλώθηκαν ως \texttt{\textlatin{signed}}, κάτι που είναι κρίσιμο για να εξασφαλιστεί ότι η \textlatin{Verilog} θα εκτελέσει τις αριθμητικές πράξεις και την αριθμητική ολίσθηση δεξιά ως προσημασμένες.
 Ιδιαίτερη προσοχή δόθηκε στον ορθό υπολογισμό της υπερχείλισης (\texttt{\textlatin{ovf}}) για τις τρεις προσημασμένες αριθμητικές πράξεις, χρησιμοποιώντας ενδιάμεσα \textlatin{wires} για σαφήνεια:
@@ -127,9 +127,9 @@
 Για όλες τις λογικές πράξεις και τις ολισθήσεις, η σημαία \texttt{\textlatin{ovf}} τίθεται πάντα σε \textlatin{1'b0}, καθώς η υπερχείλιση δεν ορίζεται για αυτές.
 Για τις πράξεις ολίσθησης, αξιοποιήθηκε η συμπεριφορά της \textlatin{Verilog}:
 \begin{itemize}
-    \item \textbf{Αριθμητική Δεξιά Ολίσθηση} (\texttt{\textlatin{>>>}}): Επειδή ο \texttt{\textlatin{op1}} είναι \texttt{\textlatin{signed}}, ο τελεστής αυτός διατηρεί αυτόματα το πρόσημο (γεμίζει με το \textlatin{MSB}).
-    \item \textbf{Λογική Δεξιά Ολίσθηση} (\texttt{\textlatin{>>}}): Απαιτήθηκε ρητή μετατροπή (\textlatin{casting}) του τελεστή σε \texttt{\textlatin{\$unsigned(op1)}} για να εξασφαλιστεί ότι η ολίσθηση θα γεμίσει τα κενά με μηδενικά, ανεξαρτήτως προσήμου.
-    \item \textbf{Αριστερές Ολισθήσεις} (\texttt{\textlatin{<<}}): Η λογική και η αριθμητική αριστερή ολίσθηση είναι ταυτόσημες και γεμίζουν πάντα με μηδενικά.
+    \item \textbf{Αριθμητική Δεξιά Ολίσθηση} (\texttt{\textlatin{> > >}}): Επειδή ο \texttt{\textlatin{op1}} είναι \texttt{\textlatin{signed}}, ο τελεστής αυτός διατηρεί αυτόματα το πρόσημο (γεμίζει με το \textlatin{MSB}).
+    \item \textbf{Λογική Δεξιά Ολίσθηση} (\texttt{\textlatin{> >}}): Απαιτήθηκε ρητή μετατροπή (\textlatin{casting}) του τελεστή σε \texttt{\textlatin{\$unsigned(op1)}} για να εξασφαλιστεί ότι η ολίσθηση θα γεμίσει τα κενά με μηδενικά, ανεξαρτήτως προσήμου.
+    \item \textbf{Αριστερές Ολισθήσεις} (\texttt{\textlatin{< <}}): Η λογική και η αριθμητική αριστερή ολίσθηση είναι \textbf{ταυτόσημες} και γεμίζουν πάντα με μηδενικά.
 \end{itemize}
 Τέλος, η σημαία \texttt{\textlatin{zero}} υλοποιήθηκε εκτός του \texttt{\textlatin{always}} μπλοκ, με μια συνεχή ανάθεση (\texttt{\textlatin{assign zero = (result == 32'b0)}}).
 Αυτό εξασφαλίζει ότι η έξοδος \texttt{\textlatin{zero}} είναι 1 οποτεδήποτε το τελικό \texttt{\textlatin{result}} είναι μηδέν.
@@ -150,6 +150,12 @@
     \item Σύγκριση μεταξύ λογικής και αριθμητικής δεξιάς ολίσθησης σε έναν αρνητικό αριθμό (\textlatin{32'hF000000A}), για να επιβεβαιωθεί η σωστή διατήρηση (ή μη) του προσήμου.
 \end{itemize}
 Η εκτέλεση του \textlatin{testbench} (όπως φαίνεται στην έξοδο της κονσόλας) επιβεβαίωσε ότι όλες οι πράξεις, συμπεριλαμβανομένων των οριακών συνθηκών, παράγουν τα αναμενόμενα αποτελέσματα και ότι οι σημαίες \texttt{\textlatin{ovf}} και \texttt{\textlatin{zero}} ενεργοποιούνται σωστά.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{alu_tb_out.png}
+    \caption{Έξοδος κονσόλας από την εκτέλεση του \texttt{\textlatin{testbench\_alu.v}}, που δείχνει την επιτυχή επαλήθευση των οριακών συνθηκών.}
+    \label{fig:alu_tb_out}
+\end{figure}
 
 % 1.4
 \subsection{Συμπέρασμα Άσκησης 1}
