@@ -165,6 +165,7 @@
 Αυτή η \textlatin{ALU} είναι πλέον έτοιμη να ενσωματωθεί στα πιο σύνθετα συστήματα των επόμενων ασκήσεων.
 
 
+
 %% -- 2 -- %%
 \newpage
 \section{Άσκηση 2: Αριθμομηχανή \textlatin{16-bit}}
@@ -177,10 +178,10 @@
 
 % 2.2
 \subsection{Σχεδίαση και Ροή Δεδομένων}
-Η υλοποίηση (αρχείο \texttt{\textlatin{calc.v}}) βασίστηκε στο διάγραμμα ροής που δόθηκε στις προδιαγραφές. Το σύστημα αποτελείται από δύο βασικά μέρη: το ακολουθιακό κύκλωμα του συσσωρευτή και το συνδυαστικό κύκλωμα της \textlatin{ALU} και της λογικής ελέγχου.
+Η υλοποίηση (αρχείο \texttt{\textlatin{calc.v}}) βασίστηκε στο διάγραμμα ροής (Σχ. 1 της εκφώνησης). Το σύστημα αποτελείται από δύο βασικά μέρη: το ακολουθιακό κύκλωμα του συσσωρευτή και το συνδυαστικό κύκλωμα της \textlatin{ALU} και της λογικής ελέγχου.
 
 \paragraph{Ακολουθιακή Λογική (\textlatin{Accumulator})}
-Η καρδιά του συστήματος είναι ο \textlatin{16-bit} καταχωρητής \texttt{\textlatin{accumulator}}, ο οποίος υλοποιήθηκε με ένα μπλοκ \texttt{\textlatin{always @(posedge clk)}}. Η λειτουργία του είναι σύγχρονη:
+Η καρδιά του συστήματος είναι ο \textlatin{16-bit} καταχωρητής \texttt{\textlatin{accumulator}}, ο οποίος υλοποιήθηκε με ένα μπλοκ \texttt{\textlatin{always @(posedge clk)}}. Η λειτουργία του είναι σύγχρονη, όπως απαιτήθηκε:
 \begin{itemize}
     \item \textbf{Σύγχρονος Μηδενισμός:} Όταν το πλήκτρο \texttt{\textlatin{btnac}} (\textlatin{All Clear}) είναι πατημένο, ο \texttt{\textlatin{accumulator}} μηδενίζεται στην επόμενη θετική ακμή του ρολογιού.
     \item \textbf{Σύγχρονη Φόρτωση:} Όταν το κεντρικό πλήκτρο \texttt{\textlatin{btnc}} είναι πατημένο (και το \texttt{\textlatin{btnac}} δεν είναι), ο \texttt{\textlatin{accumulator}} λαμβάνει και αποθηκεύει τα 16 κατώτερα \textlatin{bits} (\texttt{\textlatin{[15:0]}}) του αποτελέσματος της \textlatin{ALU} (\texttt{\textlatin{alu\_result\_wire}}).
@@ -188,33 +189,48 @@
 Η τιμή του \texttt{\textlatin{accumulator}} οδηγείται συνεχώς στην έξοδο \texttt{\textlatin{led}} μέσω μιας \texttt{\textlatin{assign}} δήλωσης.
 
 \paragraph{Συνδυαστική Λογική (Ροή \textlatin{ALU})}
-Η \textlatin{ALU} της Άσκησης 1 είναι \textlatin{32-bit}, ενώ η αριθμομηχανή λειτουργεί με τιμές \textlatin{16-bit}. Για να γεφυρωθεί αυτό το χάσμα, χρησιμοποιήθηκε επέκταση προσήμου (\textlatin{sign extension}):
+Η \textlatin{ALU} της Άσκησης 1 είναι \textlatin{32-bit}, ενώ η αριθμομηχανή λειτουργεί με τιμές \textlatin{16-bit}. Για να γεφυρωθεί αυτό το χάσμα, χρησιμοποιήθηκε επέκταση προσήμου (\textlatin{sign extension}) και για τις δύο εισόδους της \textlatin{ALU}:
 \begin{itemize}
-    \item \textbf{Είσοδος \textlatin{op1}:} Η \textlatin{16-bit} τιμή του \texttt{\textlatin{accumulator}} μετατρέπεται σε \textlatin{32-bit} προσημασμένη τιμή (\texttt{\textlatin{op1\_signed}}) επαναλαμβάνοντας το ανώτερο \textlatin{bit} του (\texttt{\textlatin{accumulator[15]}}) 16 φορές. Αυτό υλοποιήθηκε με τον τελεστή \textlatin{concatenation}: \texttt{\{\{16\{accumulator[15]\}\}, accumulator\}}.
+    \item \textbf{Είσοδος \textlatin{op1}:} Η \textlatin{16-bit} τιμή του \texttt{\textlatin{accumulator}} μετατρέπεται σε \textlatin{32-bit} προσημασμένη τιμή (\texttt{\textlatin{op1\_signed}}) επαναλαμβάνοντας το ανώτερο \textlatin{bit} του (\texttt{\textlatin{accumulator[15]}}) 16 φορές. Αυτό υλοποιήθηκε με τον τελεστή \textlatin{concatenation}: \texttt{\{\{16\{\textlatin{accumulator}[15]\}\}, \textlatin{accumulator}\}}.
     \item \textbf{Είσοδος \textlatin{op2}:} Αντίστοιχα, η \textlatin{16-bit} είσοδος από τους διακόπτες (\texttt{\textlatin{sw}}) επεκτείνεται σε \textlatin{32-bit} προσημασμένη τιμή (\texttt{\textlatin{op2\_signed}}) για να οδηγηθεί στην \texttt{\textlatin{op2}} είσοδο της \textlatin{ALU}.
 \end{itemize}
-Το \textlatin{32-bit} αποτέλεσμα (\texttt{\textlatin{result}}) της \textlatin{ALU} τροφοδοτείται πίσω στην είσοδο του \texttt{\textlatin{accumulator}}, ο οποίος (όπως αναφέρθηκε) κρατά μόνο τα 16 κατώτερα \textlatin{bits}.
+Το \textlatin{32-bit} αποτέλεσμα (\texttt{\textlatin{result}}) της \textlatin{ALU} (\texttt{\textlatin{alu\_result\_wire}}) τροφοδοτείται πίσω στην είσοδο του \texttt{\textlatin{accumulator}}, ο οποίος (όπως αναφέρθηκε) κρατά μόνο τα 16 κατώτερα \textlatin{bits}.
 
 % 2.3
 \subsection{Λογική Ελέγχου (\texttt{\textlatin{calc\_enc.v}})}
-Η επιλογή της πράξης που εκτελεί η \textlatin{ALU} δεν γίνεται απευθείας. Αντ' αυτού, ένα ξεχωριστό \textlatin{module} κωδικοποιητή (\texttt{\textlatin{calc\_enc}}) μετατρέπει τις τιμές των τριών πλήκτρων κατεύθυνσης (\texttt{\textlatin{btnl}}, \texttt{\textlatin{btnr}}, \texttt{\textlatin{btnd}}) στο \textlatin{4-bit} σήμα ελέγχου \texttt{\textlatin{alu\_op}}.
+Η επιλογή της πράξης που εκτελεί η \textlatin{ALU} δεν γίνεται απευθείας. Αντ' αυτού, ένα ξεχωριστό \textlatin{module} κωδικοποιητή, το \texttt{\textlatin{calc\_enc.v}}, αναλαμβάνει να μετατρέψει τις τιμές των τριών πλήκτρων κατεύθυνσης (\texttt{\textlatin{btnl}}, \texttt{\textlatin{btnr}}, \texttt{\textlatin{btnd}}) στο \textlatin{4-bit} σήμα ελέγχου \texttt{\textlatin{alu\_op}}.
 
-Αυτό το \textlatin{module} υλοποιεί την συνδυαστική λογική που περιγράφηκε στα Σχήματα 2 έως 5 των προδιαγραφών. Αν και οι οδηγίες ζητούσαν η υλοποίηση να γίνει σε \textlatin{structural Verilog} (με χρήση πυλών \textlatin{AND}, \textlatin{OR}, \textlatin{NOT}), στην παρούσα υλοποίηση (ενσωματωμένη στο αρχείο \texttt{\textlatin{calc.v}}) επιλέχθηκε η περιγραφή της λογικής με συνεχείς αναθέσεις (\texttt{\textlatin{assign statements}}) για λόγους απλότητας και αναγνωσιμότητας.
+Όπως απαιτήθηκε από τις προδιαγραφές (Σχήματα 2-5), αυτό το \textlatin{module} υλοποιήθηκε αμιγώς σε \textbf{\textlatin{structural Verilog}}. Η λογική περιγράφηκε χρησιμοποιώντας αποκλειστικά στιγμιότυπα πυλών (\textlatin{gate instances}) όπως \texttt{\textlatin{not}}, \texttt{\textlatin{and}}, \texttt{\textlatin{or}} και \texttt{\textlatin{xor}}, αντί για \textlatin{behavioral} αναθέσεις. Αυτή η μονάδα στη συνέχεια ενσωματώθηκε (\textlatin{instantiated}) στο \textlatin{top-level module} \texttt{\textlatin{calc.v}} και η έξοδός της (\texttt{\textlatin{alu\_op\_wire}}) συνδέθηκε απευθείας στην ομώνυμη είσοδο της \textlatin{ALU}.
 
 % 2.4
 \subsection{\textlatin{Testbench} και Αποτελέσματα Προσομοίωσης}
-Για την επαλήθευση της ορθής λειτουργίας της αριθμομηχανής, δημιουργήθηκε το αρχείο \texttt{\textlatin{testbench\_calc.v}}. Το \textlatin{testbench} αυτό υλοποιεί την ακριβή ακολουθία δοκιμών που ορίζεται στον πίνακα των προδιαγραφών.
+Για την επαλήθευση της ορθής λειτουργίας της αριθμομηχανής, δημιουργήθηκε το αρχείο \texttt{\textlatin{calc\_tb.v}}. Το \textlatin{testbench} αυτό υλοποιεί την ακριβή ακολουθία δοκιμών που ορίζεται στον πίνακα των προδιαγραφών (Πίνακες σελ. 7 και 8).
 
-Το \textlatin{testbench} παράγει ένα σήμα ρολογιού (\texttt{\textlatin{CLK\_PERIOD = 10ns}}) και χρησιμοποιεί ένα βοηθητικό \texttt{\textlatin{task}} με όνομα \texttt{\textlatin{check\_step}}. Αυτό το \texttt{\textlatin{task}} είναι κρίσιμο για τον έλεγχο ακολουθιακών κυκλωμάτων:
-\begin{enumerate}
-    \item Θέτει τις τιμές όλων των εισόδων (πλήκτρα και διακόπτες).
-    \item Αναμένει την επόμενη θετική ακμή του ρολογιού (\texttt{\textlatin{@ (posedge clk)}}), επιτρέποντας στον \texttt{\textlatin{accumulator}} να ενημερωθεί.
-    \item Ελέγχει την έξοδο \texttt{\textlatin{led}} (μετά από μια μικρή καθυστέρηση \#1) για να διασφαλίσει ότι ταιριάζει με την αναμενόμενη τιμή (\texttt{\textlatin{expected\_led}}).
-\end{enumerate}
-Η ακολουθία ελέγχου ξεκινά με \texttt{\textlatin{RESET}} (\texttt{\textlatin{btnac=1}}) και εκτελεί τις πράξεις \textlatin{ADD}, \textlatin{XOR}, \textlatin{LSR}, \textlatin{NOR}, \textlatin{MULT}, \textlatin{LSL}, \textlatin{NAND} και \textlatin{SUB}, θέτοντας το \texttt{\textlatin{btnc=1}} σε κάθε βήμα για να φορτώσει το αποτέλεσμα. Η προσομοίωση επιβεβαίwσε ότι η έξοδος \texttt{\textlatin{led}} ήταν ίδια με την αναμενόμενη τιμή σε κάθε βήμα, επαληθεύοντας τη σωστή λειτουργία του κυκλώματος.
+Το \textlatin{testbench} παράγει ένα σήμα ρολογιού (\texttt{\textlatin{CLK\_PERIOD = 10ns}}) και χρησιμοποιεί ένα βοηθητικό \texttt{\textlatin{task}} με όνομα \texttt{\textlatin{check\_step}}. Αυτό το \texttt{\textlatin{task}} είναι κρίσιμο για τον έλεγχο του ακολουθιακού κυκλώματος: σε κάθε βήμα, θέτει τις τιμές των εισόδων (πλήκτρα και διακόπτες), αναμένει την επόμενη θετική ακμή του ρολογιού (\texttt{\textlatin{@ (posedge clk)}}) και, τέλος, ελέγχει αν η έξοδος \texttt{\textlatin{led}} ταιριάζει με την αναμενόμενη τιμή (\texttt{\textlatin{expected\_led}}).
+
+Η ακολουθία ελέγχου ξεκινά με \texttt{\textlatin{RESET}} (\texttt{\textlatin{btnac=1}}) και εκτελεί τις 8 πράξεις \textlatin{(ADD, XOR, LSR, NOR, MULT, LSL, NAND, SUB)} με τη σειρά, θέτοντας το \texttt{\textlatin{btnc=1}} σε κάθε βήμα για να φορτώσει το αποτέλεσμα στον \texttt{\textlatin{accumulator}}.
+
+Η εκτέλεση του \textlatin{testbench} ήταν απόλυτα επιτυχής. Παρακάτω, το Σχήμα 2 δείχνει την έξοδο της κονσόλας, όπου επιβεβαιώνεται ότι και τα 9 βήματα της δοκιμής (συμπεριλαμβανομένου του \textlatin{RESET}) πέρασαν, με την τιμή των \textlatin{LED} να είναι η αναμενόμενη σε κάθε κύκλο. Το Σχήμα 3 παρουσιάζει τις αντίστοιχες κυματομορφές προσομοίωσης, όπου φαίνεται η σχέση μεταξύ των πλήκτρων, του \texttt{\textlatin{alu\_op\_wire}}, της εκτέλεσης της \textlatin{ALU} και της σύγχρονης ενημέρωσης του \texttt{\textlatin{accumulator}} (εξόδου \textlatin{led}) στην ακμή του ρολογιού.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{calc_tb_out.png}
+    \caption{Έξοδος κονσόλας από την εκτέλεση του \texttt{\textlatin{calc\_tb.v}}. Κάθε γραμμή \textlatin{PASS} επιβεβαιώνει ότι η τιμή των \textlatin{LED} \textlatin{(accumulator)} ταυτίστηκε με το αναμενόμενο αποτέλεσμα μετά από κάθε πράξη.}
+    \label{fig:calc_tb_out}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{epwave_calc.png}
+    \caption{Κυματομορφές προσομοίωσης (\textlatin{EPWave}) του \texttt{\textlatin{calc\_tb.v}}. Φαίνεται η αλλαγή του \texttt{\textlatin{alu\_op\_wire}} βάσει των \textlatin{btns}, και η σύγχρονη ενημέρωση του \texttt{\textlatin{led}} \textlatin{(accumulator)} στην επόμενη θετική ακμή του \texttt{\textlatin{clk}} (όταν \texttt{\textlatin{btnc}} είναι 1).}
+    \label{fig:epwave_calc}
+\end{figure}
 
 \subsection{Συμπέρασμα Άσκησης 2}
-Η Άσκηση 2 ολοκληρώθηκε με επιτυχία, ενσωματώνοντας την συνδυαστική \textlatin{ALU} της Άσκησης 1 σε ένα πλήρες ακολουθιακό κύκλωμα. Η σχεδίαση διαχειρίζεται σωστά τη ροή δεδομένων μεταξύ στοιχείων \textlatin{16-bit} (όπως ο \texttt{\textlatin{accumulator}} και το \texttt{\textlatin{sw}}) και της \textlatin{32-bit} \textlatin{ALU} μέσω της επέκτασης προσήμου (\textlatin{sign extension}). Η λογική ελέγχου για τον σύγχρονο μηδενισμό και φόρτωση του συσσωρευτή, καθώς και η αποκωδικοποίηση των πλήκτρων, λειτούργησαν όπως αναμενόταν κατά την προσομοίωση.
+Η Άσκηση 2 ολοκληρώθηκε με επιτυχία, ενσωματώνοντας την συνδυαστική \textlatin{ALU} της Άσκησης 1 σε ένα πλήρες ακολουθιακό κύκλωμα. Η σχεδίαση διαχειρίζεται σωστά τη ροή δεδομένων μεταξύ στοιχείων \textlatin{16-bit} (όπως ο \texttt{\textlatin{accumulator}} και το \texttt{\textlatin{sw}}) και της \textlatin{32-bit} \textlatin{ALU} μέσω της επέκτασης προσήμου (\textlatin{sign extension}). Η λογική ελέγχου, υλοποιημένη σε ξεχωριστό \textlatin{structural module} (\texttt{\textlatin{calc\_enc.v}}), καθώς και η σύγχρονη λογική φόρτωσης και μηδενισμού του συσσωρευτή, λειτούργησαν όπως αναμενόταν κατά την επιτυχή προσομοίωση.
+
+
+
 
 
 %% -- 3 -- %%
