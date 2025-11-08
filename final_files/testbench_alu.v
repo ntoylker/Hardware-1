@@ -1,5 +1,3 @@
-// Code your testbench here
-// or browse Examples
 //
 // TESTBENCH ΓΙΑ ΤΗΝ ALU - ΔΕΚΑΕΞΑΔΙΚΗ ΕΚΤΥΠΩΣΗ
 //
@@ -47,35 +45,35 @@ module testbench;
 
     $display("--- START TESTBENCH FOR ALU (HEXADECIMAL FORM OUTPUTS) ---");
 
-    // --- TEST 1: ALUOP_SUM (Πρόσθεση) ---
+    // --- TEST 1: ALUOP_SUM (Προσθεση) ---
     check_op(ALUOP_SUM, 100, 50);          // 100 + 50 = 150
     check_op(ALUOP_SUM, 10, -5);           // 10 + (-5) = 5
-    check_op(ALUOP_SUM, 32'h7FFFFFFF, 1);  // Test Θετικής Υπερχείλισης
-    check_op(ALUOP_SUM, 32'h80000000, -1); // Test Αρνητικής Υπερχείλισης
+    check_op(ALUOP_SUM, 32'h7FFFFFFF, 1);  // Test Θετικης Υπερχειλισης
+    check_op(ALUOP_SUM, 32'h80000000, -1); // Test Αρνητικης Υπερχειλισης
 
-    // --- TEST 2: ALUOP_SUB (Αφαίρεση) ---
+    // --- TEST 2: ALUOP_SUB (Αφαιρεση) ---
     check_op(ALUOP_SUB, 100, 50);          // 100 - 50 = 50
     check_op(ALUOP_SUB, 50, 100);          // 50 - 100 = -50
     check_op(ALUOP_SUB, 25, 25);           // Test για Zero flag
-    check_op(ALUOP_SUB, 32'h80000000, 1);  // Test Υπερχείλισης (MIN_INT - 1)
+    check_op(ALUOP_SUB, 32'h80000000, 1);  // Test Υπερχειλισης (MIN_INT - 1)
     
-    // --- TEST 3: ALUOP_MUL (Πολλαπλασιασμός) ---
+    // --- TEST 3: ALUOP_MUL (Πολλαπλασιασμος) ---
     check_op(ALUOP_MUL, 10, 5);            // 10 * 5 = 50
     check_op(ALUOP_MUL, 10, -5);           // 10 * -5 = -50
-    check_op(ALUOP_MUL, 32'h0001_0000, 32'h0001_0000); // 2^16 * 2^16 = 2^32 (Υπερχείλιση)
+    check_op(ALUOP_MUL, 32'h0001_0000, 32'h0001_0000); // 2^16 * 2^16 = 2^32 (Υπερχειλιση)
 
-    // --- TEST 4: Λογικές Πράξεις ---
+    // --- TEST 4: Λογικες Πραξεις ---
     check_op(ALUOP_AND,  32'h0F0F0F0F, 32'hFFFF0000); 
     check_op(ALUOP_OR,   32'h0F0F0F0F, 32'hFFFF0000); 
     check_op(ALUOP_XOR,  32'h0F0F0F0F, 32'hFFFF0000); 
     check_op(ALUOP_NAND, 32'h0F0F0F0F, 32'hFFFF0000); 
     check_op(ALUOP_NOR,  32'h0F0F0F0F, 32'hFFFF0000); 
     
-    // --- TEST 5: Ολισθήσεις (Shifts) ---
+    // --- TEST 5: Ολισθησεις (Shifts) ---
     check_op(ALUOP_LOG_SHFT_LEFT,    32'h0000000F, 4); 
     check_op(ALUOP_ARTHM_SHFT_LEFT,  32'h0000000F, 4); 
-    check_op(ALUOP_LOG_SHFT_RIGHT,   32'hF000000A, 4); // Λογική
-    check_op(ALUOP_ARTHM_SHFT_RIGHT, 32'hF000000A, 4); // Αριθμητική
+    check_op(ALUOP_LOG_SHFT_RIGHT,   32'hF000000A, 4); // Λογικη
+    check_op(ALUOP_ARTHM_SHFT_RIGHT, 32'hF000000A, 4); // Αριθμητικη
 
     $display("--- END OF TESTBENCH ---");
     #20; 
@@ -109,11 +107,10 @@ module testbench;
     
     #10; 
     
-    // --- ΑΛΛΑΓΗ ΕΔΩ ---
-    // Χρησιμοποιούμε %8h για να δείξει 8 δεκαεξαδικά ψηφία
     $display("[%0t ns] OP: %s | op1=%8h, op2=%8h | result=%8h | ovf=%b | zero=%b",
              $time, op_name, tb_op1, tb_op2, tb_result, tb_ovf, tb_zero);
   endtask
 
 endmodule
+
 
