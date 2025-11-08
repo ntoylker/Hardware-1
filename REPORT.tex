@@ -55,7 +55,7 @@
 % --- ΣΤΟΙΧΕΙΑ ΕΡΓΑΣΙΑΣ ---
 \title{Ψηφιακά Συστήματα \textlatin{HW} σε Χαμηλά Επίπεδα Λογικής I \\ \textlatin{Project's Report}}
 \author{Νίκος Τουλκερίδης\\ ΑΕΜ: 10718}
-\date{\today}
+\date{Νοέμβριος 2025}
 
 
 
@@ -70,7 +70,6 @@
 \newpage
 \tableofcontents % Πίνακας περιεχομένων
 
-%% -- 1 -- %%
 \newpage
 \section*{Εισαγωγή}\addcontentsline{toc}{section}{Εισαγωγή}
 
@@ -88,11 +87,11 @@
 
 Στις επόμενες ενότητες αυτής της αναφοράς παρουσιάζεται αναλυτικά η σχεδιαστική προσέγγιση που ακολουθήθηκε, ο πλήρης κώδικας \textlatin{Verilog} για κάθε \textlatin{module}, καθώς και τα αποτελέσματα της προσομοίωσης που χρησιμοποιήθηκαν για την επαλήθευση της ορθής λειτουργίας τους.
 
-%% -- 2 -- %%
+%% -- 1 -- %%
 \newpage
 \section{Άσκηση 1: Αριθμητική/Λογική Μονάδα (\textlatin{ALU})}
 
-% 2.1
+% 1.1
 \subsection{Σκοπός και Προδιαγραφές}
 Ο σκοπός της πρώτης άσκησης ήταν η σχεδίαση και υλοποίηση σε \textlatin{Verilog} μιας Αριθμητικής/Λογικής Μονάδας (\textlatin{ALU}) 32-\textlatin{bit}.
 Η μονάδα αυτή θα αποτελέσει δομικό στοιχείο για τις επόμενες ασκήσεις, συγκεκριμένα την αριθμομηχανή και τον επιταχυντή \textlatin{AI}.
@@ -112,7 +111,7 @@
 \end{itemize}
 Όπως απαιτήθηκε, οι 4-\textlatin{bit} κωδικοί για αυτές τις πράξεις ορίστηκαν ως σταθερές \texttt{\textlatin{parameter}} εντός του \textlatin{module} \texttt{\textlatin{alu.v}} για βελτιωμένη αναγνωσιμότητα.
 
-% 2.2
+% 1.2
 \subsection{Υλοποίηση (\textlatin{alu.v})}
 Η υλοποίηση της \textlatin{ALU} (αρχείο \texttt{\textlatin{alu.v}}) βασίστηκε σε ένα κεντρικό συνδυαστικό μπλοκ \texttt{\textlatin{always @(*)}}.
 Εντός αυτού του μπλοκ, ένας πολυπλέκτης υλοποιήθηκε χρησιμοποιώντας μια δομή \texttt{\textlatin{case}}.
@@ -137,7 +136,7 @@
 Μια \texttt{\textlatin{default}} περίπτωση προστέθηκε στη δομή \texttt{\textlatin{case}} για την αποφυγή συμπερασμού \textlatin{latches}.
 Ο πλήρης κώδικας της μονάδας παρατίθεται στο αρχείο \texttt{\textlatin{alu.v}}.
 
-% 2.3
+% 1.3
 \subsection{\textlatin{Testbench} και Αποτελέσματα Προσομοίωσης}
 Για την επαλήθευση της ορθής λειτουργίας της \textlatin{ALU}, δημιουργήθηκε ένα \textlatin{testbench} στο αρχείο \texttt{\textlatin{testbench\_alu.v}}.
 Το \textlatin{testbench} αυτό εκτελεί μια σειρά από προκαθορισμένες δοκιμές μέσω ενός \texttt{\textlatin{initial block}}.
@@ -152,7 +151,7 @@
 \end{itemize}
 Η εκτέλεση του \textlatin{testbench} (όπως φαίνεται στην έξοδο της κονσόλας) επιβεβαίωσε ότι όλες οι πράξεις, συμπεριλαμβανομένων των οριακών συνθηκών, παράγουν τα αναμενόμενα αποτελέσματα και ότι οι σημαίες \texttt{\textlatin{ovf}} και \texttt{\textlatin{zero}} ενεργοποιούνται σωστά.
 
-% 2.4
+% 1.4
 \subsection{Συμπέρασμα Άσκησης 1}
 Η σχεδίαση της 32-\textlatin{bit} \textlatin{ALU} ολοκληρώθηκε με επιτυχία.
 Η μονάδα που υλοποιήθηκε στο \texttt{\textlatin{alu.v}} είναι ένα αμιγώς συνδυαστικό κύκλωμα που εκτελεί σωστά και τις 12 απαιτούμενες αριθμητικές, λογικές και πράξεις ολίσθησης.
@@ -160,17 +159,17 @@
 Αυτή η \textlatin{ALU} είναι πλέον έτοιμη να ενσωματωθεί στα πιο σύνθετα συστήματα των επόμενων ασκήσεων.
 
 
-%% -- 3 -- %%
+%% -- 2 -- %%
 \newpage
 \section{Άσκηση 2: Αριθμομηχανή \textlatin{16-bit}}
 
-% 3.1
+% 2.1
 \subsection{Σκοπός και Προδιαγραφές}
 Σκοπός της δεύτερης άσκησης ήταν η σχεδίαση μιας απλής αριθμομηχανής, η οποία χρησιμοποιεί την \textlatin{32-bit} \textlatin{ALU} που δημιουργήθηκε στην Άσκηση 1. Το κύκλωμα της αριθμομηχανής (\textlatin{module} \texttt{\textlatin{calc}}) σχεδιάστηκε για να διατηρεί μια τρέχουσα τιμή σε έναν καταχωρητή συσσωρευτή (\textlatin{accumulator}) \textlatin{16-bit}.
 
 Οι είσοδοι του κυκλώματος είναι το σήμα ρολογιού (\texttt{\textlatin{clk}}), πέντε πλήκτρα ελέγχου (\texttt{\textlatin{btnc}}, \texttt{\textlatin{btnac}}, \texttt{\textlatin{btnl}}, \texttt{\textlatin{btnr}}, \texttt{\textlatin{btnd}}) και 16 διακόπτες (\texttt{\textlatin{sw}}) για την εισαγωγή δεδομένων. Η μοναδική έξοδος είναι 16 \textlatin{LED} (\texttt{\textlatin{led}}), τα οποία απεικονίζουν την τρέχουσα τιμή του συσσωρευτή.
 
-% 3.2
+% 2.2
 \subsection{Σχεδίαση και Ροή Δεδομένων}
 Η υλοποίηση (αρχείο \texttt{\textlatin{calc.v}}) βασίστηκε στο διάγραμμα ροής που δόθηκε στις προδιαγραφές. Το σύστημα αποτελείται από δύο βασικά μέρη: το ακολουθιακό κύκλωμα του συσσωρευτή και το συνδυαστικό κύκλωμα της \textlatin{ALU} και της λογικής ελέγχου.
 
@@ -190,13 +189,13 @@
 \end{itemize}
 Το \textlatin{32-bit} αποτέλεσμα (\texttt{\textlatin{result}}) της \textlatin{ALU} τροφοδοτείται πίσω στην είσοδο του \texttt{\textlatin{accumulator}}, ο οποίος (όπως αναφέρθηκε) κρατά μόνο τα 16 κατώτερα \textlatin{bits}.
 
-% 3.3
+% 2.3
 \subsection{Λογική Ελέγχου (\texttt{\textlatin{calc\_enc.v}})}
 Η επιλογή της πράξης που εκτελεί η \textlatin{ALU} δεν γίνεται απευθείας. Αντ' αυτού, ένα ξεχωριστό \textlatin{module} κωδικοποιητή (\texttt{\textlatin{calc\_enc}}) μετατρέπει τις τιμές των τριών πλήκτρων κατεύθυνσης (\texttt{\textlatin{btnl}}, \texttt{\textlatin{btnr}}, \texttt{\textlatin{btnd}}) στο \textlatin{4-bit} σήμα ελέγχου \texttt{\textlatin{alu\_op}}.
 
 Αυτό το \textlatin{module} υλοποιεί την συνδυαστική λογική που περιγράφηκε στα Σχήματα 2 έως 5 των προδιαγραφών. Αν και οι οδηγίες ζητούσαν η υλοποίηση να γίνει σε \textlatin{structural Verilog} (με χρήση πυλών \textlatin{AND}, \textlatin{OR}, \textlatin{NOT}), στην παρούσα υλοποίηση (ενσωματωμένη στο αρχείο \texttt{\textlatin{calc.v}}) επιλέχθηκε η περιγραφή της λογικής με συνεχείς αναθέσεις (\texttt{\textlatin{assign statements}}) για λόγους απλότητας και αναγνωσιμότητας.
 
-% 3.4
+% 2.4
 \subsection{\textlatin{Testbench} και Αποτελέσματα Προσομοίωσης}
 Για την επαλήθευση της ορθής λειτουργίας της αριθμομηχανής, δημιουργήθηκε το αρχείο \texttt{\textlatin{testbench\_calc.v}}. Το \textlatin{testbench} αυτό υλοποιεί την ακριβή ακολουθία δοκιμών που ορίζεται στον πίνακα των προδιαγραφών.
 
@@ -212,7 +211,185 @@
 Η Άσκηση 2 ολοκληρώθηκε με επιτυχία, ενσωματώνοντας την συνδυαστική \textlatin{ALU} της Άσκησης 1 σε ένα πλήρες ακολουθιακό κύκλωμα. Η σχεδίαση διαχειρίζεται σωστά τη ροή δεδομένων μεταξύ στοιχείων \textlatin{16-bit} (όπως ο \texttt{\textlatin{accumulator}} και το \texttt{\textlatin{sw}}) και της \textlatin{32-bit} \textlatin{ALU} μέσω της επέκτασης προσήμου (\textlatin{sign extension}). Η λογική ελέγχου για τον σύγχρονο μηδενισμό και φόρτωση του συσσωρευτή, καθώς και η αποκωδικοποίηση των πλήκτρων, λειτούργησαν όπως αναμενόταν κατά την προσομοίωση.
 
 
+%% -- 3 -- %%
+\newpage
+\section{Άσκηση 3: Αρχείο Καταχωρητών (\textlatin{Register File})}
 
+% 3.1
+\subsection{Σκοπός και Προδιαγραφές}
+Σκοπός της τρίτης άσκησης ήταν η σχεδίαση ενός αρχείου καταχωρητών (\textlatin{register file}) πολλαπλών θυρών, το οποίο θα αποτελέσει βασικό δομικό στοιχείο αποθήκευσης (π.χ. για βάρη και πολώσεις) στον επιταχυντή \textlatin{AI} της Άσκησης 4.
+
+Βάσει των προδιαγραφών, το \textlatin{module} \texttt{\textlatin{regfile.v}} έπρεπε να υλοποιήσει ένα αρχείο 16 καταχωρητών, με κάθε καταχωρητή να έχει πλάτος \texttt{\textlatin{DATAWIDTH}}. Αυτό το πλάτος ορίστηκε ως \textlatin{parameter} του \textlatin{module}, με προεπιλεγμένη τιμή τα 32 \textlatin{bits}, δημιουργώντας έτσι μια δομή \textlatin{16x32-bit}.
+
+Το κύκλωμα είναι εξαιρετικά πολυθύρικο (\textlatin{multi-ported}) για να επιτρέπει υψηλό παραλληλισμό, διαθέτοντας:
+\begin{itemize}
+    \item \textbf{Εισόδους Ελέγχου:} \texttt{\textlatin{clk}} (ρολόι), \texttt{\textlatin{resetn}} (ενεργό-χαμηλό ασύγχρονο σήμα επαναφοράς) και \texttt{\textlatin{write}} (σήμα ενεργοποίησης εγγραφής).
+    \item \textbf{Θύρες Εγγραφής (2):} Δύο πλήρεις, ανεξάρτητες θύρες εγγραφής. Η κάθε μία αποτελείται από μια \textlatin{4-bit} διεύθυνση (\texttt{\textlatin{writeReg1}}, \texttt{\textlatin{writeReg2}}) και έναν \textlatin{bus} δεδομένων \textlatin{32-bit} (\texttt{\textlatin{writeData1}}, \texttt{\textlatin{writeData2}}).
+    \item \textbf{Θύρες Ανάγνωσης (4):} Τέσσερις ανεξάρτητες θύρες ανάγνωσης. Η κάθε μία αποτελείται από μια \textlatin{4-bit} διεύθυνση (\texttt{\textlatin{readReg1}} έως \texttt{\textlatin{readReg4}}) και έναν \textlatin{bus} δεδομένων εξόδου \textlatin{32-bit} (\texttt{\textlatin{readData1}} έως \texttt{\textlatin{readData4}}).
+\end{itemize}
+
+% 3.2
+\subsection{Υλοποίηση και Λογική Λειτουργίας (\textlatin{regfile.v})}
+Η υλοποίηση στο αρχείο \texttt{\textlatin{regfile.v}} διαχωρίζει τη λειτουργία του κυκλώματος σε δύο διακριτά λογικά μπλοκ: ένα ακολουθιακό μπλοκ για την εγγραφή (την αποθήκευση) και ένα συνδυαστικό μπλοκ για την ανάγνωση (την πρόσβαση).
+
+\paragraph{Εσωτερική Αποθήκευση}
+Ο πυρήνας του \textlatin{module} είναι ένας πίνακας από \textlatin{registers} 16 θέσεων, δηλωμένος ως: \texttt{\textlatin{logic [DATAWIDTH-1:0] registers [16];}}. Αυτός ο πίνακας αποτελεί τη μνήμη του \textlatin{register file}.
+
+\paragraph{Ακολουθιακή Λογική (Εγγραφή και \textlatin{Reset})}
+Η κατάσταση των καταχωρητών (η μνήμη) τροποποιείται αποκλειστικά εντός ενός ακολουθιακού μπλοκ \texttt{\textlatin{always\_ff @(posedge clk or negedge resetn)}}.
+\begin{itemize}
+    \item \textbf{Ασύγχρονο \textlatin{Reset}:} Όπως ορίστηκε στις προδιαγραφές, το σήμα \texttt{\textlatin{resetn}} είναι ενεργό-χαμηλό. Όταν \texttt{\textlatin{resetn == 0}}, το κύκλωμα αντιδρά αμέσως (ασύγχρονα, χωρίς να περιμένει το ρολόι) και μηδενίζει όλους τους 16 καταχωρητές ταυτόχρονα, χρησιμοποιώντας έναν βρόχο \texttt{\textlatin{for}}.
+    \item \textbf{Σύγχρονη Εγγραφή:} Εάν το \texttt{\textlatin{resetn}} δεν είναι ενεργό, το κύκλωμα αναμένει τη θετική ακμή του \texttt{\textlatin{clk}}. Εάν το σήμα \texttt{\textlatin{write}} είναι ενεργό (\texttt{\textlatin{write == 1}}) κατά την ακμή, οι τιμές από τα \texttt{\textlatin{writeData1}} και \texttt{\textlatin{writeData2}} αποθηκεύονται στους καταχωρητές στις θέσεις \texttt{\textlatin{writeReg1}} και \texttt{\textlatin{writeReg2}} αντίστοιχα.
+    \item \textbf{Σύγκρουση Εγγραφής (\textlatin{Write Collision}):} Στην περίπτωση που και οι δύο θύρες εγγραφής στοχεύουν την ίδια διεύθυνση ταυτόχρονα (\texttt{\textlatin{writeReg1 == writeReg2}}), η σχεδίαση δίνει προτεραιότητα στη δεύτερη θύρα. Λόγω της διαδοχικής ανάθεσης μέσα στο \texttt{\textlatin{always}} μπλοκ, η τιμή του \texttt{\textlatin{writeData2}} θα είναι αυτή που τελικά θα αποθηκευτεί.
+\end{itemize}
+
+\paragraph{Συνδυαστική Λογική (Ανάγνωση και \textlatin{Bypass})}
+Η ανάγνωση των δεδομένων υλοποιείται σε ένα ξεχωριστό, αμιγώς συνδυαστικό μπλοκ \texttt{\textlatin{always\_comb}}. Αυτό σημαίνει ότι η ανάγνωση είναι ασύγχρονη (οι έξοδοι \texttt{\textlatin{readData}} αλλάζουν αμέσως μόλις αλλάξει μια είσοδος \texttt{\textlatin{readReg}}).
+
+Το σημαντικότερο χαρακτηριστικό αυτού του μπλοκ είναι η υλοποίηση της λογικής παράκαμψης (\textlatin{bypass}), όπως απαιτήθηκε από τις προδιαγραφές (<<δώστε προτεραιότητα στην εγγραφή>>).
+\begin{enumerate}
+    \item \textbf{Προεπιλεγμένη Ανάγνωση:} Αρχικά, οι τέσσερις έξοδοι (\texttt{\textlatin{readData1}}... \texttt{\textlatin{readData4}}) λαμβάνουν τις τιμές που είναι ήδη αποθηκευμένες στον πίνακα \texttt{\textlatin{registers}} στις αντίστοιχες διευθύνσεις ανάγνωσης.
+    \item \textbf{Λογική \textlatin{Bypass}:} Στη συνέχεια, το μπλοκ ελέγχει αν το σήμα \texttt{\textlatin{write}} είναι ενεργό. Αν είναι, το κύκλωμα ελέγχει αν κάποια από τις διευθύνσεις εγγραφής (\texttt{\textlatin{writeReg1}}, \texttt{\textlatin{writeReg2}}) ταιριάζει με κάποια από τις διευθύνσεις ανάγνωσης.
+    \item \textbf{Παράδειγμα \textlatin{Bypass}:} Εάν \texttt{\textlatin{write == 1}} και ταυτόχρονα \texttt{\textlatin{writeReg1 == readReg1}}, η έξοδος \texttt{\textlatin{readData1}} δεν θα δείξει την παλιά τιμή από το \texttt{\textlatin{registers[readReg1]}}, αλλά θα πάρει συνδυαστικά την τιμή κατευθείαν από την είσοδο \texttt{\textlatin{writeData1}}. Αυτό επιτρέπει σε μια εντολή να διαβάσει το αποτέλεσμα μιας άλλης που γράφεται στον \textbf{ίδιο κύκλο ρολογιού}, χωρίς να χρειάζεται να περιμένει τον επόμενο.
+    \item \textbf{Προτεραιότητα \textlatin{Bypass}:} Η λογική αυτή σέβεται επίσης την προτεραιότητα σύγκρουσης. Οι έλεγχοι για τη \texttt{\textlatin{writeReg2}} γίνονται \textbf{μετά} τους ελέγχους για τη \texttt{\textlatin{writeReg1}}. Επομένως, αν \texttt{\textlatin{writeReg1 == writeReg2 == readReg1}}, η έξοδος \texttt{\textlatin{readData1}} θα πάρει την τιμή από το \texttt{\textlatin{writeData2}}, διατηρώντας συνέπεια μεταξύ της λογικής εγγραφής και της λογικής ανάγνωσης.
+\end{enumerate}
+
+% 3.3
+\subsection{\textlatin{Testbench} και Αποτελέσματα Προσομοίωσης}
+Για την επαλήθευση της σύνθετης αυτής λογικής, χρησιμοποιήθηκε το αρχείο \texttt{\textlatin{testbench\_regfile.v}}. Το \textlatin{testbench} ελέγχει αυστηρά όλα τα κρίσιμα σενάρια λειτουργίας:
+\begin{itemize}
+    \item \textbf{Ασύγχρονος Μηδενισμός:} Επιβεβαιώθηκε ότι η ενεργοποίηση του \texttt{\textlatin{resetn}} μηδενίζει όλους τους καταχωρητές ακαριαία, ανεξαρτήτως ρολογιού.
+    \item \textbf{Βασική Εγγραφή/Ανάγνωση:} Ελέγχθηκε η εγγραφή δεδομένων σε πολλαπλές διευθύνσεις και η σωστή ανάγνωσή τους σε επόμενους κύκλους.
+    \item \textbf{Σύγκρουση Εγγραφής (Ακολουθιακά):} Ελέγχθηκε ότι όταν και οι δύο θύρες γράφουν στην ίδια διεύθυνση, η τιμή από τη \texttt{\textlatin{writeData2}} είναι αυτή που αποθηκεύεται μόνιμα.
+    \item \textbf{Λογική \textlatin{Bypass} (Συνδυαστικά):} Ελέγχθηκε το πιο κρίσιμο σενάριο: ενώ οι θύρες ανάγνωσης διάβαζαν παλιές τιμές, το σήμα \texttt{\textlatin{write}} ενεργοποιήθηκε. Το \textlatin{testbench} επιβεβαίωσε ότι οι έξοδοι \texttt{\textlatin{readData}} άλλαξαν \textbf{αμέσως} (συνδυαστικά) για να δείξουν τις νέες τιμές από τα \texttt{\textlatin{writeData}}, \textbf{πριν} την άφιξη της επόμενης ακμής του ρολογιού.
+    \item \textbf{Σύγκρουση \textlatin{Bypass}:} Επιβεβαιώθηκε ότι η συνδυαστική λογική παράκαμψης δίνει επίσης προτεραιότητα στη \texttt{\textlatin{writeData2}} σε περίπτωση σύγκρουσης.
+    \item \textbf{Μονιμότητα Εγγραφής:} Τέλος, ελέγχθηκε ότι τα δεδομένα που εμφανίστηκαν κατά το \textlatin{bypass} όντως αποθηκεύτηκαν μόνιμα στους καταχωρητές μετά την ακμή του ρολογιού.
+\end{itemize}
+Όλες οι παραπάνω δοκιμές ολοκληρώθηκαν με επιτυχία, επαληθεύοντας την ορθή σχεδίαση.
+
+% 3.4
+\subsection{Συμπέρασμα Άσκησης 3}
+Η σχεδίαση του αρχείου καταχωρητών \textlatin{16x32-bit} ολοκληρώθηκε με επιτυχία. Το \textlatin{module} \texttt{\textlatin{regfile.v}} υλοποιεί σωστά όλες τις προδιαγραφές, συμπεριλαμβανομένης της παραμετροποίησης \texttt{\textlatin{DATAWIDTH}}, του ασύγχρονου ενεργού-χαμηλού \textlatin{reset}, και της σύνθετης λογικής για τις τέσσερις θύρες ανάγνωσης και τις δύο θύρες εγγραφής. Ιδιαίτερα, η υλοποίηση της συνδυαστικής λογικής παράκαμψης (\textlatin{bypass}) με καθορισμένη προτεραιότητα (\textlatin{<<write-first>>)} εξασφαλίζει τη σωστή και αποδοτική ροή δεδομένων, καθιστώντας το \textlatin{module} έτοιμο για ενσωμάτωση στο τελικό σύστημα.
+
+
+
+%% -- 4 -- %%
+\newpage
+\section{Άσκηση 4: Επιταχυντής \textlatin{AI}}
+
+% 4.1
+\subsection{Σκοπός και Αρχιτεκτονική Συστήματος}
+Η Άσκηση 4 αποτελεί την τελική φάση του \textlatin{project}, όπου όλα τα προηγούμενα \textlatin{modules} ενσωματώνονται για τη δημιουργία ενός ολοκληρωμένου ψηφιακού συστήματος: ενός απλού επιταχυντή \textlatin{AI} (νευρωνικού δικτύου) βασισμένου στο διάγραμμα του Σχήματος 6 των προδιαγραφών.
+
+Το σύστημα αυτό σχεδιάστηκε ως ένας εξειδικευμένος επεξεργαστής \textlatin{datapath} ελεγχόμενος από μια κεντρική Μηχανή Πεπερασμένων Καταστάσεων (\textlatin{Finite State Machine} - \textlatin{FSM}). Η συνολική αρχιτεκτονική (στο αρχείο \texttt{\textlatin{nn.v}}) αποτελείται από:
+\begin{itemize}
+    \item Μια μνήμη \textlatin{ROM} (\texttt{\textlatin{rom.v}}) που περιέχει τα βάρη (\textlatin{weights}) και τις πολώσεις (\textlatin{biases}) του δικτύου.
+    \item Το αρχείο καταχωρητών \textlatin{16x32-bit} (\texttt{\textlatin{regfile.v}} της Άσκησης 3) για την αποθήκευση αυτών των τιμών.
+    \item Δύο μονάδες \textlatin{ALU} (\texttt{\textlatin{alu.v}} της Άσκησης 1) για την εκτέλεση των πράξεων ολίσθησης στα στάδια προ- και μετά-επεξεργασίας.
+    \item Δύο νέες μονάδες \textlatin{Multiply-Accumulate} (\texttt{\textlatin{mac\_unit.v}}) για την εκτέλεση των υπολογισμών των νευρώνων.
+    \item Μια κεντρική μονάδα ελέγχου \textlatin{FSM} και ενδιάμεσους καταχωρητές για τον συντονισμό ολόκληρης της ροής δεδομένων.
+\end{itemize}
+
+% 4.2
+\subsection{Υλοποίηση Μονάδας \textlatin{MAC} (\texttt{\textlatin{mac\_unit.v}})}
+Πριν από την υλοποίηση του τελικού \textlatin{top-level module}, σχεδιάστηκε η βοηθητική μονάδα \texttt{\textlatin{mac\_unit.v}}. Σκοπός της είναι να εκτελεί την σύνθετη πράξη \texttt{(\textlatin{op1} * \textlatin{op2}) + \textlatin{op3}}, που αποτελεί τον πυρήνα υπολογισμού ενός νευρώνα.
+
+Όπως ορίστηκε στις προδιαγραφές, το \textlatin{module} αυτό δεν σχεδιάστηκε ως ένας βελτιστοποιημένος πολλαπλασιαστής-αθροιστής, αλλά ως ένα δομικό (\textlatin{structural}) \textlatin{module} που συνδέει δύο από τις \textlatin{ALU} της Άσκησης 1 σε σειρά.
+\begin{itemize}
+    \item Η πρώτη \textlatin{ALU} (\texttt{\textlatin{u\_alu\_mul}}) λαμβάνει τα \texttt{\textlatin{op1}} και \texttt{\textlatin{op2}} και εκτελεί \textit{πάντα} την πράξη του πολλαπλασιασμού (\texttt{\textlatin{ALUOP\_MUL}}).
+    \item Η δεύτερη \textlatin{ALU} (\texttt{\textlatin{u\_alu\_add}}) λαμβάνει ως \texttt{\textlatin{op1}} το αποτέλεσμα (\texttt{\textlatin{result}}) της πρώτης \textlatin{ALU} και ως \texttt{\textlatin{op2}} την είσοδο \texttt{\textlatin{op3}} (την πόλωση/bias), εκτελώντας \textit{πάντα} την πράξη της πρόσθεσης (\texttt{\textlatin{ALUOP\_SUM}}).
+\end{itemize}
+Η μονάδα \texttt{\textlatin{mac\_unit.v}} είναι αμιγώς συνδυαστική και εξάγει το τελικό αποτέλεσμα (\texttt{\textlatin{total\_result}}) καθώς και τις σημαίες \texttt{\textlatin{zero}}/\texttt{\textlatin{ovf}} και από τα δύο στάδια (\texttt{\textlatin{zero\_mul}}, \texttt{\textlatin{ovf\_mul}}, \texttt{\textlatin{zero\_add}}, \texttt{\textlatin{ovf\_add}}), όπως απαιτήθηκε.
+
+% 4.3
+\subsection{Σχεδίαση Κεντρικής Μονάδας (\texttt{\textlatin{nn.v}})}
+Ο πυρήνας του επιταχυντή \textlatin{AI} υλοποιήθηκε στο \textlatin{top-level module} \texttt{\textlatin{nn.v}}. Αυτό περιέχει τη λογική ελέγχου (\textlatin{FSM}) και το \textlatin{datapath} (τις \textlatin{instantiations} των \texttt{\textlatin{alu}}, \texttt{\textlatin{mac\_unit}}, \texttt{\textlatin{regfile}}, \texttt{\textlatin{rom}} και τους ενδιάμεσους καταχωρητές).
+
+\paragraph{Επιλογή Τύπου \textlatin{FSM} (Moore vs Mealy)}
+Οι προδιαγραφές επέτρεπαν την επιλογή μεταξύ \textlatin{Mealy} και \textlatin{Moore FSM}. Για αυτήν την υλοποίηση, επιλέχθηκε η σχεδίαση μιας \textbf{\textlatin{FSM} τύπου Moore}.
+\begin{itemize}
+    \item \textbf{Αιτιολόγηση:} Σε μια \textlatin{Moore FSM}, οι έξοδοι εξαρτώνται αποκλειστικά από την τρέχουσα κατάσταση (\texttt{\textlatin{current\_state}}) και όχι από τις τρέχουσες (ασύγχρονες) εισόδους. Στη σχεδίασή μας (\texttt{\textlatin{nn.v}}), όλα τα σήματα ελέγχου του \textlatin{datapath} (π.χ. \texttt{\textlatin{rf\_write\_enable\_s}}, \texttt{\textlatin{alu1\_op\_s}}, \texttt{\textlatin{mac1\_op1\_s}}) και οι τελικές έξοδοι (\texttt{\textlatin{final\_output}}, \texttt{\textlatin{total\_ovf}}) καθορίζονται μόνο από την κατάσταση στην οποία βρίσκεται η \textlatin{FSM}.
+    \item \textbf{Υλοποίηση:} Αυτό επιτεύχθηκε με τον κλασικό διαχωρισμό της λογικής σε δύο \textlatin{blocks}:
+        \begin{enumerate}
+            \item Ένα ακολουθιακό \texttt{\textlatin{always\_ff}} που χειρίζεται το \texttt{\textlatin{resetn}} και την ενημέρωση του \texttt{\textlatin{current\_state}} σε κάθε \texttt{\textlatin{posedge clk}}.
+            \item Ένα συνδυαστικό \texttt{\textlatin{always\_comb}} που ορίζει την \texttt{\textlatin{next\_state}} και \textit{όλα} τα σήματα του \textlatin{datapath} βασιζόμενο αποκλειστικά στην \texttt{\textlatin{current\_state}}.
+        \end{enumerate}
+    \item \textbf{Πλεονεκτήματα:} Αυτή η προσέγγιση απλοποιεί τον συγχρονισμό, καθιστά το \textlatin{timing} πιο προβλέψιμο και αποτρέπει τη δημιουργία ανεπιθύμητων συνδυαστικών βρόχων (\textlatin{combinational loops}).
+\end{itemize}
+
+\paragraph{Επιλογή Αποθήκευσης Ενδιάμεσων Τιμών}
+Οι προδιαγραφές επέτρεπαν την αποθήκευση ενδιάμεσων αποτελεσμάτων (π.χ. \texttt{\textlatin{inter\_1}}, \texttt{\textlatin{inter\_3}}) είτε πίσω στο \texttt{\textlatin{regfile.v}} είτε σε αποκλειστικούς καταχωρητές.
+\begin{itemize}
+    \item \textbf{Επιλογή:} Επιλέχθηκε η χρήση\textbf{ αποκλειστικών ενδιάμεσων καταχωρητών }(π.χ. \texttt{\textlatin{inter\_1\_reg}}, \texttt{\textlatin{inter\_3\_reg}}, \texttt{\textlatin{temp\_result\_reg}}, κ.λπ.).
+    \item \textbf{Αιτιολόγηση:} Η επαναχρησιμοποίηση του \texttt{\textlatin{regfile.v}} (στις διευθύνσεις \texttt{\textlatin{0x12-0x15}}) θα απαιτούσε πολύπλοκο έλεγχο των θυρών εγγραφής (\texttt{\textlatin{writeReg1}}, \texttt{\textlatin{writeReg2}}) και ανάγνωσης (\texttt{\textlatin{readReg1-4}}) ταυτόχρονα με την ανάγνωση των βαρών/πολώσεων. Η χρήση ξεχωριστών καταχωρητών απλοποιεί δραστικά τη λογική ελέγχου του \textlatin{datapath}, καθώς η έξοδος ενός σταδίου απλά αποθηκεύεται στον δικό της \textlatin{register} και γίνεται διαθέσιμη ως είσοδος στο επόμενο στάδιο, χωρίς κίνδυνο συγκρούσεων (\textlatin{hazards}) στο \texttt{\textlatin{regfile}}.
+\end{itemize}
+
+% 4.4
+\subsection{Λειτουργία \textlatin{FSM} και Ροή Δεδομένων}
+Η \textlatin{FSM} υλοποιεί τις 7 καταστάσεις που ορίστηκαν, χρησιμοποιώντας 3 \textlatin{bits}.
+\begin{enumerate}
+    \item \textbf{\texttt{\textlatin{STATE\_DEACTIVATED}} (\textlatin{3'b000}):} Η αρχική κατάσταση μετά από ασύγχρονο, ενεργό-χαμηλό \texttt{\textlatin{resetn}}. Όλοι οι καταχωρητές μηδενίζονται.
+    
+    \item \textbf{\texttt{\textlatin{STATE\_LOAD}} (\textlatin{3'b001}):} Μια κατάσταση πολλαπλών κύκλων (9 κύκλοι, ελεγχόμενη από το \texttt{\textlatin{load\_counter}}) που εκτελείται μία φορά μετά το \textlatin{reset}. Σκοπός της είναι να αντιγράψει τα βάρη/πολώσεις από τη \texttt{\textlatin{rom.v}} στο \texttt{\textlatin{regfile.v}}. Σε κάθε κύκλο, η \textlatin{FSM} ζητά δύο νέες διευθύνσεις 32-\textlatin{bit} από τη \textlatin{ROM} και ταυτόχρονα γράφει στο \texttt{\textlatin{regfile}} τα δεδομένα που είχαν φτάσει από τον \textit{προηγούμενο} κύκλο. Η αντιστοίχιση διευθύνσεων ακολουθεί τον πίνακα των προδιαγραφών (π.χ. \texttt{\textlatin{shift\_bias\_1}} $\rightarrow$ \texttt{R[2]}, \texttt{\textlatin{weight\_1}} $\rightarrow$ \texttt{R[4]}, κ.λπ.).
+    
+    \item \textbf{\texttt{\textlatin{STATE\_IDLE}} \textlatin{(3'b010)}:} Η κατάσταση αναμονής του συστήματος. Η \textlatin{FSM} παραμένει εδώ μέχρι η είσοδος \texttt{\textlatin{enable}} να ενεργοποιηθεί. Όταν \texttt{\textlatin{enable == 1}}, η \textlatin{FSM} μεταβαίνει στο \texttt{\textlatin{STATE\_PRE\_PROC}} και, κυρίως, μηδενίζει τις "κολλώδεις" σημαίες (\textlatin{sticky flags}) \texttt{\textlatin{total\_ovf\_reg}} και \texttt{\textlatin{total\_zero\_reg}} για να ξεκινήσει ένας νέος, καθαρός υπολογισμός.
+    
+    \item \textbf{\texttt{\textlatin{STATE\_PRE\_PROC}} \textlatin{(3'b011)}:} (1 κύκλος) Εκτελεί παράλληλα τις δύο αρχικές ολισθήσεις. Η \texttt{\textlatin{u\_alu\_1}} εκτελεί \texttt{\textlatin{input\_1 >>> shift\_bias\_1}} (διαβάζοντας το \texttt{R[2]}) και η \texttt{\textlatin{u\_alu\_2}} εκτελεί \texttt{\textlatin{input\_2 >>> shift\_bias\_2}} (διαβάζοντας το \texttt{R[3]}). Τα αποτελέσματα αποθηκεύονται στα \texttt{\textlatin{inter\_1\_reg}} και \texttt{\textlatin{inter\_2\_reg}}.
+    
+    \item \textbf{\texttt{\textlatin{STATE\_INPUT\_LAYER}} \textlatin{(3'b100)}:} (1 κύκλος) Εκτελεί παράλληλα τους δύο νευρώνες του πρώτου επιπέδου. Η \texttt{\textlatin{u\_mac\_1}} εκτελεί \texttt{\textlatin{inter\_1\_reg * weight\_1 + bias\_1}} (διαβάζοντας τα \texttt{R[4]}, \texttt{R[5]}) και η \texttt{\textlatin{u\_mac\_2}} εκτελεί \texttt{\textlatin{inter\_2\_reg * weight\_2 + bias\_2}} (διαβάζοντας τα \texttt{R[6]}, \texttt{R[7]}). Τα αποτελέσματα αποθηκεύονται στα \texttt{\textlatin{inter\_3\_reg}} και \texttt{\textlatin{inter\_4\_reg}}.
+    
+    \item \textbf{\texttt{\textlatin{STATE\_OUT\_LAYER}} \textlatin{(3'b101)}:} (2 κύκλοι) Εκτελεί σειριακά τον υπολογισμό του τελικού νευρώνα, όπως απαιτήθηκε.
+        \begin{itemize}
+            \item \textbf{Βήμα 1 (\texttt{\textlatin{output\_step=0}}):} Η \texttt{\textlatin{u\_mac\_1}} υπολογίζει το \texttt{\textlatin{temp\_result = inter\_3\_reg * weight\_3 + bias\_3}} (διαβάζοντας τα \texttt{R[8]}, \texttt{R[10]}). Το αποτέλεσμα αποθηκεύεται στο \texttt{\textlatin{temp\_result\_reg}}.
+            \item \textbf{Βήμα 2 (\texttt{\textlatin{output\_step=1}}):} Η \texttt{\textlatin{u\_mac\_2}} υπολογίζει το \texttt{\textlatin{inter\_5 = inter\_4\_reg * weight\_4 + temp\_result\_reg}} (διαβάζοντας το \texttt{R[9]}). Το αποτέλεσμα αποθηκεύεται στο \texttt{\textlatin{inter\_5\_reg}}.
+        \end{itemize}
+    
+    \item \textbf{\texttt{\textlatin{STATE\_POST\_PROC}} \textlatin{(3'b110)}:} (1 κύκλος) Εκτελεί την τελική αριστερή ολίσθηση. Η \texttt{\textlatin{u\_alu\_1}} εκτελεί \texttt{\textlatin{inter\_5\_reg << shift\_bias\_3}} (διαβάζοντας το \texttt{R[11]}). Το αποτέλεσμα αποθηκεύεται στον τελικό καταχωρητή εξόδου \texttt{\textlatin{final\_output\_reg}}. Η \textlatin{FSM} μεταβαίνει αυτόματα στο \texttt{\textlatin{STATE\_IDLE}} για να αναμένει την επόμενη εντολή.
+\end{enumerate}
+
+% 4.5
+\subsection{Διαχείριση Σφαλμάτων (\textlatin{Overflow/Zero})}
+Ιδιαίτερη προσοχή δόθηκε στη διαχείριση των σφαλμάτων, σύμφωνα με τις προδιαγραφές.
+
+\paragraph{Χειρισμός Υπερχείλισης (\textlatin{Overflow})}:
+Ο χειρισμός της υπερχείλισης είναι κρίσιμος και υλοποιεί μια λογική παράκαμψης (\textlatin{override}).
+\begin{itemize}
+    \item Στο τέλος κάθε υπολογιστικού σταδίου, το \texttt{\textlatin{always\_comb}} \textlatin{block} ελέγχει αν συνέβη υπερχείλιση σε οποιαδήποτε ενεργή μονάδα \textlatin{ALU} ή \textlatin{MAC} (\texttt{\textlatin{stage\_has\_ovf}}).
+    \item Αν \texttt{\textlatin{stage\_has\_ovf == 1}}:
+    \begin{enumerate}
+        \item Το "κολλώδες" (\textlatin{sticky}) \textlatin{flag} \texttt{\textlatin{total\_ovf\_next}} τίθεται σε 1.
+        \item Αν ήταν η \textit{πρώτη} υπερχείλιση στον τρέχοντα υπολογισμό (\texttt{\textlatin{total\_ovf\_reg == 0}}), η \textlatin{FSM} "παγώνει" τον κωδικό του τρέχοντος σταδίου (π.χ. \texttt{\textlatin{3'b100}} για το \textlatin{Input Layer}) στον καταχωρητή \texttt{\textlatin{ovf\_fsm\_stage\_}} \hskip0pt \texttt{\textlatin{next}}.
+        \item \textbf{Παράκαμψη \textlatin{FSM}:} Η \texttt{\textlatin{next\_state}} αναγκάζεται να μεταβεί αμέσως στο \texttt{\textlatin{STATE\_IDLE}}, αγνοώντας την κανονική ροή.
+        \item \textbf{Παράκαμψη Εξόδου:} Η τιμή \texttt{\textlatin{final\_output\_next}} αναγκάζεται να πάρει την τιμή \texttt{\textlatin{32'hFFFFFFFF}}, όπως ορίζει το μοντέλο αναφοράς \texttt{\textlatin{nn\_model.v}}.
+    \end{enumerate}
+    \item Αυτή η συμπεριφορά σταματά άμεσα τον υπολογισμό μόλις εντοπιστεί μη έγκυρο αποτέλεσμα, εξοικονομώντας κύκλους.
+\end{itemize}
+
+\paragraph{Χειρισμός Μηδενισμού (\textlatin{Zero})}:
+Ο χειρισμός του μηδενισμού είναι παρόμοιος αλλά \textit{δεν} διακόπτει τον υπολογισμό. Εάν εντοπιστεί μηδενικό αποτέλεσμα (\texttt{\textlatin{stage\_has\_zero}}), το \textlatin{sticky flag} \texttt{\textlatin{total\_zero\_next}} ενεργοποιείται και το \texttt{\textlatin{zero\_fsm\_stage\_next}} καταγράφει το πρώτο στάδιο που το προκάλεσε. Ο υπολογισμός συνεχίζεται κανονικά μέχρι το τέλος.
+
+% 4.6
+\subsection{\textlatin{Testbench} και Επαλήθευση Συστήματος}
+Η επαλήθευση του ολοκληρωμένου συστήματος πραγματοποιήθηκε με το \texttt{\textlatin{tb\_nn.v}}. Αυτό το \textlatin{testbench} ελέγχει το \texttt{\textlatin{nn.v}} \textlatin{module} συγκρίνοντας την έξοδό του με ένα μαθηματικό μοντέλο αναφοράς, τη συνάρτηση \texttt{\textlatin{nn\_model}} (παρέχεται στο \texttt{\textlatin{nn\_model.v}}).
+
+\paragraph{Διαχείριση Καθυστέρησης (\textlatin{Latency})}
+Το \texttt{\textlatin{nn\_model.v}} είναι μια συνδυαστική συνάρτηση που δίνει αποτέλεσμα ακαριαία. Το \textlatin{DUT} (\texttt{\textlatin{nn.v}}), ωστόσο, είναι ένα ακολουθιακό σύστημα \textlatin{pipeline} 5 κύκλων (1 \textlatin{PRE}, 1 \textlatin{IN}, 2 \textlatin{OUT}, 1 \textlatin{POST}). Το \textlatin{testbench} (\texttt{\textlatin{tb\_nn.v}}) διαχειρίζεται σωστά αυτή τη διαφορά: αφού δώσει τις εισόδους και το \texttt{\textlatin{enable}}, περιμένει \texttt{\textlatin{FSM\_LATENCY}} (5) κύκλους ρολογιού πριν διαβάσει την έξοδο \texttt{\textlatin{dut\_final\_output}} και τη συγκρίνει με το \texttt{\textlatin{expected\_output}} του μοντέλου.
+
+\paragraph{Σχέδιο Δοκιμών (\textlatin{Test Plan})}
+Το \textlatin{testbench} εκτελεί 100 επαναλήψεις, όπως ζητήθηκε. Κάθε επανάληψη περιλαμβάνει τρεις διαδοχικές δοκιμές με τυχαίες τιμές:
+\begin{enumerate}
+    \item \textbf{Κανονικό Εύρος:} Είσοδοι στο εύρος [\textlatin{-4096}, \textlatin{4095}] για έλεγχο της βασικής λειτουργίας.
+    \item \textbf{Θετική Υπερχείλιση:} Είσοδοι στο εύρος [\textlatin{MAX\_POS\_HALF}, \textlatin{MAX\_POS}] για να προκληθεί σκόπιμα θετική υπερχείλιση.
+    \item \textbf{Αρνητική Υπερχείλιση:} Είσοδοι στο εύρος [\textlatin{MAX\_NEG}, \textlatin{MAX\_NEG\_HALF}] για να προκληθεί σκόπιμα αρνητική υπερχείλιση.
+\end{enumerate}
+Σε κάθε δοκιμή, το \textlatin{testbench} εκτυπώνει \textlatin{[PASS]} ή \textlatin{[FAIL]} και στο τέλος αναφέρει το συνολικό σκορ (π.χ. \textlatin{300 / 300 tests passed}).
+
+\paragraph{Αποτελέσματα}
+Η εκτέλεση της προσομοίωσης με το \texttt{\textlatin{tb\_nn.v}} ήταν επιτυχής. Το \texttt{\textlatin{nn.v}} πέρασε και τις 300 δοκιμές (100 επαναλήψεις x 3 \textlatin{tests}), επιβεβαιώνοντας ότι το \textlatin{datapath}, η \textlatin{FSM} και, κυρίως, η κρίσιμη λογική παράκαμψης (\textlatin{override}) της υπερχείλισης λειτουργούν ακριβώς όπως το μοντέλο αναφοράς.
+
+% 4.7
+\subsection{Συμπέρασμα Άσκησης 4}
+Η Άσκηση 4 ολοκληρώθηκε με επιτυχία, συνδυάζοντας όλα τα \textlatin{modules} των προηγούμενων ασκήσεων σε ένα λειτουργικό σύστημα επιταχυντή \textlatin{AI}. Η σχεδίαση βασίστηκε σε μια στιβαρή \textlatin{Moore FSM} 7 καταστάσεων που ελέγχει ένα παράλληλο \textlatin{datapath} (2x \textlatin{ALU}, 2x \textlatin{MAC}). Η μονάδα διαχειρίζεται σωστά τη φόρτωση των βαρών από τη \textlatin{ROM} στο \texttt{\textlatin{regfile}}, την εκτέλεση του \textlatin{pipeline} υπολογισμών 5 κύκλων, και τον κρίσιμο μηχανισμό παράκαμψης σε περίπτωση υπερχείλισης. Η πλήρης επαλήθευση μέσω του παρεχόμενου \textlatin{testbench} και μοντέλου αναφοράς επιβεβαίωσε την ορθότητα της σχεδίασης.
 
 
 
