@@ -1,10 +1,3 @@
-//
-// File: tb_nn.v
-// Description: Full testbench for the 'nn' module (Exercise 4).
-//              Corrects $urandom_range logic for signed ranges.
-//              Now prints DUT flags (OVF/ZERO stages) on every test.
-//
-
 `timescale 1ns / 1ps
 
 module tb_nn;
@@ -157,7 +150,7 @@ endfunction
         // 5. Check the result (after the 5th cycle)
         #1; // Wait 1ps for combinatorial outputs to stabilize
         
-        // --- 8< --- MODIFIED: Display Logic --- 8< ---
+        // --- 8 --- Display Logic --- 8 ---
         $display("       Inputs: %h(%d), %h(%d)", in1, in1, in2, in2);
         $display("       DUT Output: %h(%d) | Model Output: %h(%d)", 
                  dut_final_output, dut_final_output, expected_output, expected_output);
@@ -178,14 +171,13 @@ endfunction
                  dut_total_ovf, dut_ovf_fsm_stage, 
                  dut_total_zero, dut_zero_fsm_stage);
         $display("       -------------------------------------------------");
-        // --- 8< --- END OF MODIFICATION --- 8< ---
         
         // Wait 2 cycles for FSM to be stable in IDLE before next test
         repeat(2) @(posedge clk);
         
     endtask
     
-    // --- 8< --- NEW: Helper Function for Signed Random --- 8< ---
+    // --- 8 --- Helper Function for Signed Random --- 8 ---
     // Generates a signed random number in the range [min_val, max_val]
     function automatic signed [31:0] get_signed_random_range(
         input signed [31:0] min_val, 
