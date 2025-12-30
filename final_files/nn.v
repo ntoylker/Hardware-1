@@ -275,9 +275,13 @@ module nn #(
         case (current_state)
             
             STATE_DEACTIVATED: begin
-                // Reset State. Will transition to STATE_LOAD
-                // on the 1st clock edge *after* resetn=1.
-                next_state = STATE_LOAD;
+                // Reset State. 
+                // Wait for 'enable' signal to start loading process.
+                if (enable) begin
+                    next_state = STATE_LOAD;
+                end else begin
+                    next_state = STATE_DEACTIVATED;
+                end
             end
 
             STATE_LOAD: begin

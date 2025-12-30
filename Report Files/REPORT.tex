@@ -52,20 +52,48 @@
 }
 
 
-% --- ΣΤΟΙΧΕΙΑ ΕΡΓΑΣΙΑΣ ---
-\title{Ψηφιακά Συστήματα \textlatin{HW} σε Χαμηλά Επίπεδα Λογικής I \\ \textlatin{Project's Report}}
-\author{Νίκος Τουλκερίδης\\ ΑΕΜ: 10718}
-\date{Νοέμβριος 2025}
-
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                   ΚΥΡΙΩΣ ΑΝΑΦΟΡΑ                      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% --- ΕΞΩΦΥΛΛΟ ---
 \begin{document}
 
-\maketitle % Δημιουργία σελίδας τίτλου
+\begin{titlepage}
+    \centering
+    \vspace*{1cm} % Ένα μικρό κενό από την κορυφή της σελίδας
+
+    % Εισαγωγή της εικόνας (logo)
+    % Προσαρμόζεις το width=0.8\textwidth αν τη θέλεις μεγαλύτερη/μικρότερη
+    \includegraphics[width=0.5\textwidth]{logoauth.png}
+
+    \vspace{2cm} % Κενό ανάμεσα στην εικόνα και τον τίτλο
+
+    % Τίτλος Μαθήματος
+    {\huge \textbf{Ψηφιακά Συστήματα \textlatin{HW} σε Χαμηλά Επίπεδα Λογικής I} \par}
+    
+    \vspace{0.5cm}
+    
+    % Υπότιτλος
+    {\Large \textlatin{Project's Report} \par}
+
+    \vspace{3cm} % Κενό ανάμεσα στον τίτλο και το όνομα
+
+    % Στοιχεία Φοιτητή
+    {\Large \textbf{Νίκος Τουλκερίδης} \par}
+    \vspace{0.2cm}
+    {\large ΑΕΜ: 10718 \par}
+
+    \vfill % Σπρώχνει την ημερομηνία στο κάτω μέρος της σελίδας
+
+    % Ημερομηνία
+    {\large Νοέμβριος 2025 \par}
+    
+    \vspace{1cm}
+\end{titlepage}
+
 
 \newpage
 \tableofcontents % Πίνακας περιεχομένων
@@ -421,7 +449,7 @@
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=1\textwidth]{FSM.png}
+    \includegraphics[width=1\textwidth]{fsm.drawio.png}
     \caption{Διάγραμμα των 7 καταστάσεων (\textlatin{states}) της \textlatin{Moore FSM} και των μεταξύ τους μεταβάσεων, όπως υλοποιήθηκαν στο \texttt{\textlatin{nn.v}}.}
 \end{figure}
 
@@ -471,7 +499,7 @@
 \paragraph{Λογική \texttt{\textlatin{case (current\_state)}}}
 Η \textlatin{FSM} πλοηγείται στις 7 καταστάσεις της:
 \begin{itemize}
-    \item \textbf{\texttt{\textlatin{STATE\_DEACTIVATED}}}: Μεταβαίνει στο \texttt{\textlatin{STATE\_LOAD}} μόλις το \textlatin{reset} απενεργοποιηθεί.
+    \item \textbf{\texttt{\textlatin{STATE\_DEACTIVATED}}}: Η αρχική κατάσταση μετά το \textlatin{reset}. Η \textlatin{FSM} παραμένει εδώ όσο το \texttt{\textlatin{enable}} είναι 0. Η μετάβαση στο \texttt{\textlatin{STATE\_LOAD}} πραγματοποιείται μόνο όταν το \texttt{\textlatin{enable}} γίνει 1.
     \item \textbf{\texttt{\textlatin{STATE\_LOAD}}}: (9 κύκλοι) Διαχειρίζεται τον \texttt{\textlatin{load\_counter}} για να στείλει τις σωστές διευθύνσεις στη \textlatin{ROM} (π.χ. \texttt{\textlatin{rom\_addr1\_s = (load\_counter * 2) * 4}}) και να ενεργοποιήσει την εγγραφή στο \texttt{\textlatin{regfile}} (π.χ. \texttt{\textlatin{rf\_writeReg1\_s = ((load\_counter - 1) * 2)}}) με τα δεδομένα του προηγούμενου κύκλου. Μετά τον 9ο κύκλο, μεταβαίνει στο \texttt{\textlatin{STATE\_IDLE}}.
     \item \textbf{\texttt{\textlatin{STATE\_IDLE}}}: Αναμένει το σήμα \texttt{\textlatin{enable}}. Όταν \texttt{\textlatin{enable == 1}}, μεταβαίνει στο \texttt{\textlatin{STATE\_PRE\_PROC}}.
     \item \textbf{\texttt{\textlatin{STATE\_PRE\_PROC}}}: (1 κύκλος) Θέτει τα σήματα ελέγχου για παράλληλη εκτέλεση. Συνδέει:
