@@ -479,10 +479,8 @@ module nn #(
             // 1. Return to IDLE
             next_state = STATE_IDLE;
             
-            // 2. Set output to max POS signed 32-bit number
-            //    Spec  requires max positive number (32'h7FFFFFFF).
-          	// 	  all 1s except the MSB=0, 0111.1111....1111
-            final_output_next = 32'h7FFFFFFF;
+            // 2. Set output to -1 (32'hFFFFFFFF) to match the nn_model behavior
+            final_output_next = 32'hFFFFFFFF;
         end
 
     end // always_comb
