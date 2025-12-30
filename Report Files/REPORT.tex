@@ -504,31 +504,30 @@
     \item \textbf{\texttt{\textlatin{STATE\_IDLE}}}: Αναμένει το σήμα \texttt{\textlatin{enable}}. Όταν \texttt{\textlatin{enable == 1}}, μεταβαίνει στο \texttt{\textlatin{STATE\_PRE\_PROC}}.
     \item \textbf{\texttt{\textlatin{STATE\_PRE\_PROC}}}: (1 κύκλος) Θέτει τα σήματα ελέγχου για παράλληλη εκτέλεση. Συνδέει:
         \begin{itemize}
-            \item \texttt{ALU1}: \texttt{\textlatin{input\_1 >>> R[2]}} (όπου \textlatin{R[2]} = \texttt{\textlatin{shift\_bias\_1}})
-            \item \texttt{ALU2}: \texttt{\textlatin{input\_2 >>> R[3]}} (όπου \textlatin{R[3]} = \texttt{\textlatin{shift\_bias\_2}})
+            \item \texttt{\textlatin{ALU1}}: \texttt{\textlatin{input\_1 >>> R[2]}} (όπου \textlatin{R[2]} = \texttt{\textlatin{shift\_bias\_1}})
+            \item \texttt{\textlatin{ALU2}}: \texttt{\textlatin{input\_2 >>> R[3]}} (όπου \textlatin{R[3]} = \texttt{\textlatin{shift\_bias\_2}})
         \end{itemize}
         Τα αποτελέσματα αποθηκεύονται στα \texttt{\textlatin{inter\_1\_next}} και \texttt{\textlatin{inter\_2\_next}}.
     \item \textbf{\texttt{\textlatin{STATE\_INPUT\_LAYER}}}: (1 κύκλος) Εκτελεί παράλληλα τους δύο νευρώνες. Συνδέει:
         \begin{itemize}
-            \item \texttt{MAC1}: \texttt{\textlatin{inter\_1\_reg * R[4] + R[5]}} (όπου \textlatin{R[4]=w1, R[5]=b1})
-            \item \texttt{MAC2}: \texttt{\textlatin{inter\_2\_reg * R[6] + R[7]}} (όπου \textlatin{R[6]=w2, R[7]=b2})
+            \item \texttt{\textlatin{MAC1}}: \texttt{\textlatin{inter\_1\_reg * R[4] + R[5]}} (όπου \textlatin{R[4]=w1, R[5]=b1})
+            \item \texttt{\textlatin{MAC2}}: \texttt{\textlatin{inter\_2\_reg * R[6] + R[7]}} (όπου \textlatin{R[6]=w2, R[7]=b2})
         \end{itemize}
         Τα αποτελέσματα αποθηκεύονται στα \texttt{\textlatin{inter\_3\_next}} και \texttt{\textlatin{inter\_4\_next}}.
-        m \textbf{\texttt{\textlatin{STATE\_OUT\_LAYER}}}: (2 κύκλοι, σειριακά)
+        \textbf{\texttt{\textlatin{STATE\_OUT\_LAYER}}}: (2 κύκλοι, σειριακά)
         \begin{itemize}
-            \item \textbf{Κύκλος 1 (\texttt{\textlatin{output\_step=0}}):} \texttt{MAC1} $\rightarrow$ \texttt{\textlatin{inter\_3\_reg * R[8] + R[10]}} (\textlatin{w3, b3}). Το αποτέλεσμα σώζεται στο \texttt{\textlatin{temp\_result\_next}}.
-            \item \textbf{Κύκλος 2 (\texttt{\textlatin{output\_step=1}}):} \texttt{MAC2} $\rightarrow$ \texttt{\textlatin{inter\_4\_reg * R[9] + temp\_result\_reg}} (\textlatin{w4, temp}). Το αποτέλεσμα σώζεται στο \texttt{\textlatin{inter\_5\_next}}.
+            \item \textbf{Κύκλος 1 (\texttt{\textlatin{output\_step=0}}):} \texttt{\textlatin{MAC1}} $\rightarrow$ \texttt{\textlatin{inter\_3\_reg * R[8] + R[10]}} (\textlatin{w3, b3}). Το αποτέλεσμα σώζεται στο \texttt{\textlatin{temp\_result\_next}}.
+            \item \textbf{Κύκλος 2 (\texttt{\textlatin{output\_step=1}}):} \texttt{\textlatin{MAC2}} $\rightarrow$ \texttt{\textlatin{inter\_4\_reg * R[9] + temp\_result\_reg}} (\textlatin{w4, temp}). Το αποτέλεσμα σώζεται στο \texttt{\textlatin{inter\_5\_next}}.
         \end{itemize}
-        m \textbf{\texttt{\textlatin{STATE\_POST\_PROC}}}: (1 κύκλος) Εκτελεί την τελική ολίσθηση. Συνδέει:
+        \textbf{\texttt{\textlatin{STATE\_POST\_PROC}}}: (1 κύκλος) Εκτελεί την τελική ολίσθηση. Συνδέει:
         \begin{itemize}
-            \item \texttt{ALU1}: \texttt{\textlatin{inter\_5\_reg << R[11]}} (όπου \textlatin{R[11]} = \texttt{\textlatin{shift\_bias\_3}})
+            \item \texttt{\textlatin{ALU1}}: \texttt{\textlatin{inter\_5\_reg << R[11]}} (όπου \textlatin{R[11]} = \texttt{\textlatin{shift\_bias\_3}})
         \end{itemize}
         Το αποτέλεσμα αποθηκεύεται στο \texttt{\textlatin{final\_output\_next}} και η \textlatin{FSM} επιστρέφει στο \texttt{\textlatin{STATE\_IDLE}}.
 \end{itemize}
 
 
 % 4.6
-\newpage
 \subsection{Διαχείριση Σφαλμάτων (\textlatin{Overflow/Zero})}
 Η διαχείριση σφαλμάτων είναι κρίσιμη και υλοποιείται στο τέλος του συνδυαστικού μπλοκ \texttt{\textlatin{always\_comb}}.
 
@@ -537,7 +536,7 @@
 \begin{itemize}
     \item Σε κάθε στάδιο, ελέγχεται αν κάποια ενεργή μονάδα παρήγαγε μηδέν (\texttt{\textlatin{stage\_has\_zero}}).
     \item Αν ναι, η σημαία \texttt{\textlatin{total\_zero\_next}} τίθεται μόνιμα σε 1.
-    \item Αν ήταν η \textit{πρώτη} φορά που ανιχνεύτηκε μηδέν (\texttt{\textlatin{total\_zero\_reg == 0}}), η \textlatin{FSM} καταγράφει τον κωδικό του τρέχοντος σταδίου (π.χ. \texttt{3'b100}) στο \texttt{\textlatin{zero\_fsm\_stage\_next}}.
+    \item Αν ήταν η \textit{πρώτη} φορά που ανιχνεύτηκε μηδέν (\texttt{\textlatin{total\_zero\_reg == 0}}), η \textlatin{FSM} καταγράφει τον κωδικό του τρέχοντος σταδίου (π.χ. \texttt{3'\textlatin{b100}}) στο \texttt{\textlatin{zero\_fsm\_stage\_next}}.
 \end{itemize}
 
 \paragraph{Χειρισμός Υπερχείλισης (\textlatin{Overflow})}
@@ -562,7 +561,7 @@
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1\textwidth, height=5.5cm]{EPWave_wrong.png}
-    \caption{Κυματομορφές \textlatin{EPWave} που δείχνουν τη στιγμή της υπερχείλισης. Μόλις το \texttt{\textlatin{current\_state}} φτάνει στο \textlatin{STATE\_INPUT\_LAYER} (4), ανιχνεύεται υπερχείλιση. Στον επόμενο κύκλο, η \textlatin{FSM} αγνοεί τη ροή και επιστρέφει στο \textlatin{IDLE} (2), ενώ το \texttt{\textlatin{total\_ovf}} γίνεται 1 και το \texttt{\textlatin{final\_output}} παίρνει την τιμή \textlatin{7FFFFFFF}.}
+    \caption{Κυματομορφές \textlatin{EPWave} που δείχνουν τη στιγμή της υπερχείλισης. Μόλις το \texttt{\textlatin{current\_state}} φτάνει στο \textlatin{STATE\_INPUT\_LAYER} (4), ανιχνεύεται υπερχείλιση. Στον επόμενο κύκλο, η \textlatin{FSM} αγνοεί τη ροή και επιστρέφει στο \textlatin{IDLE} (2), ενώ το \texttt{\textlatin{total\_ovf}} γίνεται 1 και το \texttt{\textlatin{final\_output}} παίρνει την τιμή \textlatin{FFFFFFFF}.}
 \end{figure}
 
 
@@ -570,10 +569,13 @@
 \newpage
 % 4.7
 \subsection{\textlatin{Testbench} και Αποτελέσματα Προσομοίωσης}
-Η επαλήθευση του ολοκληρωμένου συστήματος πραγματοποιήθηκε με το \texttt{\textlatin{tb\_nn.v}}. Αυτό το \textlatin{testbench} ελέγχει το \texttt{\textlatin{nn.v}} \textlatin{(DUT)} συγκρίνοντας την έξοδό του με ένα μαθηματικό μοντέλο αναφοράς, τη συνάρτηση \texttt{\textlatin{nn\_model}}.
+Η επαλήθευση του ολοκληρωμένου συστήματος πραγματοποιήθηκε με το \texttt{\textlatin{tb\_nn.v}}.
+Αυτό το \textlatin{testbench} ελέγχει το \texttt{\textlatin{nn.v}} \textlatin{(DUT)} συγκρίνοντας την έξοδό του με ένα μαθηματικό μοντέλο αναφοράς, τη συνάρτηση \texttt{\textlatin{nn\_model}}.
 
 \paragraph{Διαχείριση Καθυστέρησης (\textlatin{Latency})}
-Το \texttt{\textlatin{nn\_model.v}} είναι συνδυαστικό και δίνει αποτέλεσμα ακαριαία. Το \textlatin{DUT} (\texttt{\textlatin{nn.v}}) είναι ένα ακολουθιακό σύστημα \textlatin{pipeline} 5 κύκλων (1 \textlatin{PRE}, 1 \textlatin{IN}, 2 \textlatin{OUT}, 1 \textlatin{POST}). Το \textlatin{testbench} διαχειρίζεται σωστά αυτή τη διαφορά, περιμένοντας \texttt{\textlatin{FSM\_LATENCY = 5}} κύκλους ρολογιού μετά την ενεργοποίηση (\texttt{\textlatin{enable}}) πριν διαβάσει και συγκρίνει τα αποτελέσματα.
+Το \texttt{\textlatin{nn\_model.v}} είναι συνδυαστικό και δίνει αποτέλεσμα ακαριαία.
+Το \textlatin{DUT} (\texttt{\textlatin{nn.v}}) είναι ένα ακολουθιακό σύστημα \textlatin{pipeline} 5 κύκλων (1 \textlatin{PRE}, 1 \textlatin{IN}, 2 \textlatin{OUT}, 1 \textlatin{POST}).
+Το \textlatin{testbench} διαχειρίζεται σωστά αυτή τη διαφορά, περιμένοντας \texttt{\textlatin{FSM\_LATENCY = 5}} κύκλους ρολογιού μετά την ενεργοποίηση (\texttt{\textlatin{enable}}) πριν διαβάσει και συγκρίνει τα αποτελέσματα.
 
 \paragraph{Σχέδιο Δοκιμών (\textlatin{Test Plan})}
 Το \textlatin{testbench} εκτελεί 100 επαναλήψεις (\texttt{\textlatin{NUM\_REPETITIONS}}). Κάθε επανάληψη περιλαμβάνει τρεις διαδοχικές δοκιμές με τυχαίες τιμές:
@@ -584,59 +586,35 @@
 \end{enumerate}
 Στο τέλος, αναφέρει το συνολικό σκορ (π.χ. \textlatin{300 / 300 tests passed}).
 
-% 4.8
-\subsection{\textlatin{Testbench} και Αποτελέσματα Προσομοίωσης}
-Η επαλήθευση του ολοκληρωμένου συστήματος πραγματοποιήθηκε με το \texttt{\textlatin{tb\_nn.v}}. Αυτό το \textlatin{testbench} ελέγχει το \texttt{\textlatin{nn.v}} \textlatin{(DUT)} συγκρίνοντας την έξοδό του με ένα μαθηματικό μοντέλο αναφοράς, τη συνάρτηση \texttt{\textlatin{nn\_model}}.
-
-\paragraph{Διαχείριση Καθυστέρησης (\textlatin{Latency})}
-Το \texttt{\textlatin{nn\_model.v}} είναι συνδυαστικό και δίνει αποτέλεσμα ακαριαία. Το \textlatin{DUT} (\texttt{\textlatin{nn.v}}) είναι ένα ακολουθιακό σύστημα \textlatin{pipeline} 5 κύκλων (1 \textlatin{PRE}, 1 \textlatin{IN}, 2 \textlatin{OUT}, 1 \textlatin{POST}). Το \textlatin{testbench} διαχειρίζεται σωστά αυτή τη διαφορά, περιμένοντας \texttt{\textlatin{FSM\_LATENCY = 5}} κύκλους ρολογιού μετά την ενεργοποίηση (\texttt{\textlatin{enable}}) πριν διαβάσει και συγκρίνει τα αποτελέσματα.
-
-\paragraph{Σχέδιο Δοκιμών (\textlatin{Test Plan})}
-Το \textlatin{testbench} εκτελεί 100 επαναλήψεις (\texttt{\textlatin{NUM\_REPETITIONS}}). Κάθε επανάληψη περιλαμβάνει τρεις διαδοχικές δοκιμές με τυχαίες τιμές:
-\begin{enumerate}
-    \item \textbf{Κανονικό Εύρος:} [\textlatin{-4096}, \textlatin{4095}].
-    \item \textbf{Θετική Υπερχείλιση:} [\textlatin{MAX\_POS\_HALF}, \textlatin{MAX\_POS}].
-    \item \textbf{Αρνητική Υπερχείλιση:} [\textlatin{MAX\_NEG}, \textlatin{MAX\_NEG\_HALF}].
-\end{enumerate}
-Στο τέλος, αναφέρει το συνολικό σκορ (π.χ. \textlatin{298 / 300 tests passed}).
-
-\paragraph{Ανάλυση Αποτελεσμάτων (Οριακές Περιπτώσεις)}
-Η εκτέλεση του \textlatin{testbench} για 100 επαναλήψεις (συνολικά 300 δοκιμές) ανέδειξε ποσοστό επιτυχίας \textbf{99.3\% (298/300 \textlatin{tests passed})}.
-
+\paragraph{Ανάλυση Αποτελεσμάτων}
+Η εκτέλεση του \textlatin{testbench} για 100 επαναλήψεις (συνολικά 300 δοκιμές) ολοκληρώθηκε με απόλυτη επιτυχία, σημειώνοντας ποσοστό \textbf{100\% (300/300 \textlatin{tests passed})}.
 Συγκεκριμένα:
 \begin{itemize}
-    \item Τα 100 τεστ του <<\textlatin{Normal Range}>> πέρασαν επιτυχώς.
-    \item Τα 198 από τα 200 τεστ υπερχείλισης πέρασαν επιτυχώς, επιβεβαιώνοντας ότι η λογική παράκαμψης σε \textlatin{IDLE} και η έξοδος -1 λειτουργούν σωστά στη συντριπτική πλειοψηφία των περιπτώσεων.
-    \item Παρατηρήθηκαν μόλις 2 αποτυχίες (\textlatin{FAILs}) σε τυχαία σενάρια.
+    \item Τα 100 τεστ του <<\textlatin{Normal Range}>> παρήγαγαν ακριβή αποτελέσματα, επιβεβαιώνοντας την ορθότητα των υπολογισμών του \textlatin{datapath}.
+    \item Τα 200 τεστ υπερχείλισης πέρασαν επίσης επιτυχώς. Αυτό επιβεβαιώνει ότι η λογική ανίχνευσης σφάλματος \textlatin{(sticky flags}), η άμεση μετάβαση σε κατάσταση \textlatin{IDLE} και η απόδοση της τιμής εξόδου -1 λειτουργούν σωστά σε όλα τα στάδια του \textlatin{pipeline}.
 \end{itemize}
-
-\textbf{Τεχνική Αιτιολόγηση:} Η ανάλυση των αποτελεσμάτων έδειξε ότι οι 2 αυτές αποτυχίες οφείλονται σε ασυμφωνία στον χειρισμό της υπερχείλισης κατά την \textbf{ολίσθηση} (\textlatin{bit shifting}).
-Το μοντέλο αναφοράς (\texttt{\textlatin{nn\_model}}) ελέγχει αυστηρά αν η τελική ολίσθηση αλλοιώνει το πρόσημο του αριθμού και επιστρέφει -1.
-Αντίθετα, η μονάδα \textlatin{ALU} (όπως σχεδιάστηκε στην Άσκηση 1 βάσει των τότε προδιαγραφών) δεν παράγει σήμα υπερχείλισης (\texttt{\textlatin{ovf}}) για τις εντολές ολίσθησης (\texttt{\textlatin{ALUOP\_ASL}}).
-Ως αποτέλεσμα, όταν συμβαίνει υπερχείλιση \textit{αποκλειστικά} στο τελικό στάδιο (\textlatin{Post-Processing}), το υλικό επιστρέφει την ολισθημένη τιμή, ενώ το μοντέλο το θεωρεί σφάλμα. Η συμπεριφορά του κυκλώματος κρίνεται ορθή βάσει των προδιαγραφών της \textlatin{ALU} που υλοποιήθηκε.\\\\
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{tb_nn_score_298.png}
-    \caption{Τελικό αποτέλεσμα προσομοίωσης: 298/300 επιτυχείς δοκιμές, επιβεβαιώνοντας τη σωστή λειτουργία της \textlatin{FSM} και του \textlatin{Datapath}.}
+    \includegraphics[width=1\textwidth]{tb_nn_examples.png}
+    \caption{Στιγμιότυπο από το τρέξιμο των τελευταίων επαναλήψεων, όπου φαίνεται η επιτυχής σύγκριση τόσο για κανονικές τιμές όσο και για περιπτώσεις υπερχείλισης.}
+    \label{fig:tb_nn_examples}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{tb_nn_score.png}
+    \caption{Τελικό αποτέλεσμα προσομοίωσης: 300/300 επιτυχείς δοκιμές, επιβεβαιώνοντας την πλήρως ορθή λειτουργία της \textlatin{FSM} και του \textlatin{Datapath}.}
     \label{fig:final_score}
 \end{figure}
 
-\newpage
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=1\textwidth]{tb_nn_fail_analysis.png}
-    \caption{Στιγμιότυπο αποτυχίας (\textlatin{FAIL}): Το μοντέλο αναφοράς επιστρέφει \textlatin{FFFFFFFF} (-1) λόγω υπερχείλισης στην ολίσθηση, ενώ το \textlatin{DUT} δεν ανιχνεύει σφάλμα (\textlatin{OVF=0}) λόγω των προδιαγραφών της \textlatin{ALU}, οδηγώντας σε ασυμφωνία.}
-    \label{fig:fail_analysis}
-\end{figure}
-
-
-\newpage
-% 4.9
-\newpage
+% 4.8
 \subsection{Συμπέρασμα Άσκησης 4}
-Η Άσκηση 4 ολοκληρώθηκε με επιτυχία, επιτυγχάνοντας τον τελικό στόχο της ενσωμάτωσης όλων των επιμέρους μονάδων σε έναν ολοκληρωμένο επιταχυντή \textlatin{AI}. Η σχεδίαση βασίστηκε σε μια στιβαρή \textlatin{Moore FSM} 7 καταστάσεων, η οποία διαχειρίζεται ορθά τον συγχρονισμό του \textlatin{datapath}, τη φόρτωση δεδομένων από τη \textlatin{ROM} και την υλοποίηση του \textlatin{pipeline} 5 κύκλων.
+Η Άσκηση 4 ολοκληρώθηκε με επιτυχία, επιτυγχάνοντας τον τελικό στόχο της ενσωμάτωσης όλων των επιμέρους μονάδων σε έναν ολοκληρωμένο επιταχυντή \textlatin{AI}.
+Η σχεδίαση βασίστηκε σε μια στιβαρή \textlatin{Moore FSM} 7 καταστάσεων, η οποία διαχειρίζεται ορθά τον συγχρονισμό του \textlatin{datapath}, τη φόρτωση δεδομένων από τη \textlatin{ROM} και την υλοποίηση του \textlatin{pipeline} 5 κύκλων.
 \\\\
-Το σύστημα ανταποκρίνεται πλήρως στις αναθεωρημένες οδηγίες, απαιτώντας το σήμα \texttt{\textlatin{enable}} για την εκκίνηση της διαδικασίας φόρτωσης και αποδίδοντας την τιμή -1 (\texttt{\textlatin{32'hFFFFFFFF}}) σε περιπτώσεις υπερχείλισης. Παρά την ελάχιστη στατιστική ασυμφωνία (\texttt{\textlatin{298/300 tests passed}}) που οφείλεται αποκλειστικά στον σχεδιαστικό περιορισμό της \textlatin{ALU} ως προς την ανίχνευση υπερχείλισης σε πράξεις ολίσθησης κατά το τελικό στάδιο, η συνολική λειτουργία του κυκλώματος κρίνεται απόλυτα ορθή.
+Το σύστημα ανταποκρίνεται πλήρως στις αναθεωρημένες οδηγίες, απαιτώντας το σήμα \texttt{\textlatin{enable}} για την εκκίνηση της διαδικασίας φόρτωσης και αποδίδοντας την τιμή -1 (\texttt{\textlatin{32'hFFFFFFFF}}) σε περιπτώσεις υπερχείλισης.
+Η απόλυτη ταύτιση των αποτελεσμάτων (\texttt{\textlatin{300/300 tests passed}}) μεταξύ του υλικού (\textlatin{DUT}) και του μοντέλου αναφοράς επιβεβαιώνει την ορθότητα της σχεδίασης τόσο σε επίπεδο \textlatin{Control} όσο και σε επίπεδο \textlatin{Datapath}.
 
+\end{document}
 \end{document}
