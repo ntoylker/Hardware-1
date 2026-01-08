@@ -2,7 +2,7 @@
 
 > A university project for the course **"Digital HW Systems at Low Logic Levels I" (Hardware 1)** at Aristotle University of Thessaloniki (AUTh).
 
-**Author:** Nikos Toulkeridis (AEM: 10718)
+**Author:** Nikos Toulkeridis
 
 ---
 
